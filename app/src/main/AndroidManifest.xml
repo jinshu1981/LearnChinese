@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.xuzhi.learnchinese" >
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name=".data.LearnChineseProvider"
+            android:authorities="com.example.xuzhi.learnchinese" />
+
+        <activity
+            android:name=".ParentsOptionsActivity"
+            android:label="@string/title_activity_parents_options" >
+        </activity>
+        <activity
+            android:name=".CustomLearningActivity"
+            android:label="@string/title_activity_custom_learning" >
+        </activity>
+        <activity
+            android:name=".CustomLearningDetailActivity"
+            android:label="@string/title_activity_custom_learning_detail" >
+        </activity>
+        <activity
+            android:name=".AddCustomLearningActivity"
+            android:label="@string/title_activity_add_custom_learning" >
+        </activity>
+        <activity
+            android:name=".LearnedCharactersActivity"
+            android:label="@string/title_activity_learned_characters" >
+        </activity>
+        <activity
+            android:name=".CustomDefinePronunciationActivity"
+            android:label="@string/title_activity_custom_define_pronounciation" >
+        </activity>
+        <activity
+            android:name=".CustomPronunciationActivity"
+            android:label="@string/title_activity_custom_pronunciation" >
+        </activity>
+    </application>
+
+</manifest>

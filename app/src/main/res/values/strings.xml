@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">学汉字</string>
+    <string name="hello_world">日</string>
+    <string name="action_settings">家长</string>
+    <string name="custom_learning_action_settings">新增</string>
+    <string name="title_activity_parents_options">家长园地</string>
+    <string name="title_activity_custom_learning">自定义学习内容</string>
+
+    <string name="custom_learing_hint">使用自己定义的短语，句子和文章学习汉字，例如《床前明月光》</string>
+    <string name="title_activity_custom_learning_detail">具体内容</string>
+    <string name="title_activity_add_custom_learning">新增自定义学习</string>
+
+    <!-- dialog -->
+    <string name="dialog_edit_or_delete_title">编辑或删除</string>
+    <string name="dialog_edit">编辑</string>
+    <string name="dialog_delete">删除</string>
+    <string name="title_activity_learned_characters">已学会的汉字</string>
+    <!-- <string name="title_activity_character_detail">CharacterDetailActivity</string> -->
+     <string name="title_activity_custom_define_pronounciation">新增自定义发音</string>
+     <string-array name="tone_type">
+         <item>阴平（ˉ）</item>
+         <item>阳平（ˊ）</item>
+         <item>上声（ˇ）</item>
+         <item>去声（ˋ）</item>
+         <item>轻声（不标调）</item>
+     </string-array>
+     <string name="title_activity_custom_pronunciation">自定义发音</string>
+
+ <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
