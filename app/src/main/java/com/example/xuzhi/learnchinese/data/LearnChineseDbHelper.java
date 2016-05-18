@@ -33,7 +33,8 @@ public class LearnChineseDbHelper  extends SQLiteOpenHelper {
                 Character.COLUMN_PRONUNCIATION + " TEXT    NOT NULL, " +
                 Character.COLUMN_MULTITONE + " TEXT    NOT NULL, " +
                 Character.COLUMN_READ + " TEXT    NOT NULL, " +
-                Character.COLUMN_DISPLAY_SEQUENCE + " INTEGER    NOT NULL);";
+                Character.COLUMN_DISPLAY_SEQUENCE + " INTEGER    NOT NULL, " +
+                Character.COLUMN_ABILITY_TEST_SEQUENCE + " INTEGER    NOT NULL);";
         final String SQL_CREATE_CUSTOM_LEARNING_TABLE = "CREATE TABLE " + CustomLearning.TABLE_NAME + " (" +
                 CustomLearning._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 CustomLearning.COLUMN_NAME + " TEXT    NOT NULL, " +

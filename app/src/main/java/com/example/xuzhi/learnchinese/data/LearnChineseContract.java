@@ -28,36 +28,6 @@ public class LearnChineseContract {
     public static final String NO = "no";
     public static final String DONE = "done";
 
-    /*public static final class CharacterReadOnly implements BaseColumns {
-
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_CHARACTER_READ_ONLY).build();
-
-        public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CHARACTER_READ_ONLY;
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CHARACTER_READ_ONLY;
-
-        public static final String TABLE_NAME = "CharacterReadOnly";
-        public static final String COLUMN_ID = "_id";
-        public static final String COLUMN_CHARACTER_ID = "character_id";
-        public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_PRONUNCIATION = "pronunciation";
-        public static final String COLUMN_MULTITONE = "multitone";
-        public static final String COLUMN_READ = "read";
-        public static final String COLUMN_DISPLAY_SEQUENCE = "display_sequence";
-
-        public static Uri buildCharacterStatusUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
-        }
-        public static Uri buildCharacterStatusUriByCharacterId(int characterId) {
-            return CONTENT_URI.buildUpon().appendPath(COLUMN_CHARACTER_ID).appendPath(Integer.toString(characterId)).build();
-        }
-        public static String getTheSecondPara(Uri uri) {
-            return uri.getPathSegments().get(2);
-        }
-    }*/
-
         public static final class Character implements BaseColumns {
 
         public static final Uri CONTENT_URI =
@@ -79,10 +49,12 @@ public class LearnChineseContract {
         public static final String COLUMN_WRITE = "write";
         public static final String COLUMN_DONE = "done";
         public static final String COLUMN_DISPLAY_SEQUENCE = "display_sequence";
+        public static final String COLUMN_ABILITY_TEST_SEQUENCE = "ability_test_sequence";
 
         public static final String PATH_CHARACTER_ID_LIST = "idList";
         public static final String PATH_CHARACTER_NAME_LIST = "nameList";
         public static final String PATH_DISPLAY_SEQUENCE_AND_READ = "display_sequence_and_read";
+            public static final String PATH_ABILITY_TEST_SEQUENCE_AND_READ = "ability_test_sequence_and_read";
         public static Uri buildCharacterUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
@@ -97,6 +69,9 @@ public class LearnChineseContract {
         }
         public static Uri buildCharacterUriByDisplaySequenceAndRead(String sequence,String read) {
             return CONTENT_URI.buildUpon().appendPath(PATH_DISPLAY_SEQUENCE_AND_READ).appendPath(sequence).appendPath(read).build();
+        }
+        public static Uri buildCharacterUriByAbilityTestSequenceAndRead(String sequence,String read) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_ABILITY_TEST_SEQUENCE_AND_READ).appendPath(sequence).appendPath(read).build();
         }
         public static Uri buildCharacterUriById(int id) {
             return CONTENT_URI.buildUpon().appendPath(COLUMN_ID).appendPath(Integer.toString(id)).build();
@@ -150,7 +125,7 @@ public class LearnChineseContract {
         public static Uri buildCustomLearningUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-        public static Uri buildCustomLearningByName(String name) {
+        public static Uri buildCustomLearningUriByName(String name) {
             return CONTENT_URI.buildUpon().appendPath(COLUMN_NAME).appendPath(name).build();
         }
         public static Uri buildCustomLearningUriById(int id) {

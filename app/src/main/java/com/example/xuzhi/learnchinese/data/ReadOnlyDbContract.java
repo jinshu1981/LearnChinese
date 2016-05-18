@@ -20,7 +20,7 @@ public class ReadOnlyDbContract {
     // the content provider.
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    public static final String PATH_CHARACTER = CharacterReadOnly.TABLE_NAME;
+    //public static final String PATH_CHARACTER = CharacterReadOnly.TABLE_NAME;
     public static final String PATH_CHARACTER_READ_ONLY = CharacterReadOnly.TABLE_NAME;
     public static final String YES = "yes";
     public static final String NO = "no";
@@ -36,7 +36,7 @@ public class ReadOnlyDbContract {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CHARACTER_READ_ONLY;
 
-        public static final String TABLE_NAME = "CharacterReadOnly";
+        public static final String TABLE_NAME = "Characters";
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_CHARACTER_ID = "character_id";
         public static final String COLUMN_NAME = "name";
@@ -44,7 +44,7 @@ public class ReadOnlyDbContract {
         public static final String COLUMN_MULTITONE = "multitone";
         public static final String COLUMN_READ = "read";
         public static final String COLUMN_DISPLAY_SEQUENCE = "display_sequence";
-
+        public static final String COLUMN_ABILITY_TEST_SEQUENCE = "ability_test_sequence";
         public static Uri buildCharacterStatusUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }

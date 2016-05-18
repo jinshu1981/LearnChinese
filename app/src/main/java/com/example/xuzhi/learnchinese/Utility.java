@@ -23,6 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by xuzhi on 2016/3/3.
@@ -145,6 +147,21 @@ public class Utility {
         Log.v(LOG_TAG,"setCustomLearningTag Tag = " + tag);
         editor.commit();
     }
+    static public String getFirstUseTag(FragmentActivity a)
+    {
+        SharedPreferences settings =  PreferenceManager.getDefaultSharedPreferences(a);
+        String tag = settings.getString("FirstUseTag", "true");
+        Log.v(LOG_TAG, "getFirstUseTag Tag = " + tag);
+        return tag;
+    }
+    static public void setFirstUseTag(FragmentActivity a,String tag)
+    {
+        SharedPreferences settings =  PreferenceManager.getDefaultSharedPreferences(a);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("FirstUseTag", tag);
+        Log.v(LOG_TAG,"setFirstUseTag Tag = " + tag);
+        editor.commit();
+    }
     static public String getDbMd5(Context a)
     {
         SharedPreferences settings =  PreferenceManager.getDefaultSharedPreferences(a);
@@ -169,6 +186,17 @@ public class Utility {
         Log.v(LOG_TAG, "sha1 Tag = " + sha1);
 
         editor.commit();
+    }
+
+    static public String getCurrentDate()
+    {
+        Locale locale = Locale.getDefault();
+        System.out.println("Locale is : [" + locale + "]"); // make sure there is a default Locale
+        Calendar calendar = Calendar.getInstance(locale);
+        String date = Integer.toString(calendar.get(Calendar.YEAR)) + "-" +
+                Integer.toString(calendar.get(Calendar.MONTH) + 1) + "-" +
+                Integer.toString(calendar.get(Calendar.DATE));
+        return date;
     }
 
 }

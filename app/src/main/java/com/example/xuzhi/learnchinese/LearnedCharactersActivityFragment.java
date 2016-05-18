@@ -94,10 +94,10 @@ public class LearnedCharactersActivityFragment extends Fragment implements Loade
         if ((cursor==null)||(cursor.getCount() == 0))
         {
             Log.v(LOG_TAG, " return cursorLoader.getId()" + cursorLoader.getId());
-            hint.setText("还没有已学会的汉字，快去学习吧！");
+            hint.setText("0");
             return;
         }
-        hint.setText("已经学会" +cursor.getCount() + "个汉字，单击汉字将其重新放入待学习字库");
+        hint.setText(Integer.toString(cursor.getCount()));
         Log.v(LOG_TAG, "onLoadFinished");
         mAdapter.swapCursor(cursor);
 

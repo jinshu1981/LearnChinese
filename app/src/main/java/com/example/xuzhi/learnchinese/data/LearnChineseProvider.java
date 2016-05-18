@@ -33,9 +33,10 @@ public class LearnChineseProvider extends ContentProvider {
     static final int LEARN_CHINESE_CHARACTER_WITH_READ = 107;
     static final int LEARN_CHINESE_CHARACTER_WITH_DISPLAY_SEQUENCE_AND_READ = 108;
     static final int LEARN_CHINESE_CHARACTER_WITH_CHARACTER_ID = 109;
-
+    static final int LEARN_CHINESE_CHARACTER_WITH_ABILITY_TEST_SEQUENCE_AND_READ = 110;
     static final int LEARN_CHINESE_CUSTOM_LEARNING = 200;
     static final int LEARN_CHINESE_CUSTOM_LEARNING_WITH_ID = 201;
+    static final int LEARN_CHINESE_CUSTOM_LEARNING_WITH_NAME = 202;
 
     static final int LEARN_CHINESE_CHARACTER_READ_ONLY = 300;
     private static final SQLiteQueryBuilder sLearnChineseQueryBuilder;
@@ -62,10 +63,12 @@ public class LearnChineseProvider extends ContentProvider {
         matcher.addURI(authority, LearnChineseContract.PATH_CHARACTER + "/" + LearnChineseContract.Character.PATH_CHARACTER_NAME_LIST +"/*", LEARN_CHINESE_CHARACTER_WITH_NAME_LIST);
         matcher.addURI(authority, LearnChineseContract.PATH_CHARACTER + "/" + LearnChineseContract.Character.COLUMN_READ +"/*", LEARN_CHINESE_CHARACTER_WITH_READ);
         matcher.addURI(authority, LearnChineseContract.PATH_CHARACTER + "/" + LearnChineseContract.Character.PATH_DISPLAY_SEQUENCE_AND_READ +"/*/*", LEARN_CHINESE_CHARACTER_WITH_DISPLAY_SEQUENCE_AND_READ);
-
+        matcher.addURI(authority, LearnChineseContract.PATH_CHARACTER + "/" + LearnChineseContract.Character.PATH_ABILITY_TEST_SEQUENCE_AND_READ +"/*/*", LEARN_CHINESE_CHARACTER_WITH_ABILITY_TEST_SEQUENCE_AND_READ);
         matcher.addURI(authority, LearnChineseContract.PATH_CHARACTER + "/" + LearnChineseContract.Character.COLUMN_CHARACTER_ID +"/*", LEARN_CHINESE_CHARACTER_WITH_CHARACTER_ID);
+
         matcher.addURI(authority, LearnChineseContract.PATH_CUSTOM_LEARNING, LEARN_CHINESE_CUSTOM_LEARNING);
         matcher.addURI(authority, LearnChineseContract.PATH_CUSTOM_LEARNING+ "/" + LearnChineseContract.CustomLearning.COLUMN_ID +"/*", LEARN_CHINESE_CUSTOM_LEARNING_WITH_ID);
+        matcher.addURI(authority, LearnChineseContract.PATH_CUSTOM_LEARNING+ "/" + LearnChineseContract.CustomLearning.COLUMN_NAME +"/*", LEARN_CHINESE_CUSTOM_LEARNING_WITH_NAME);
 
         matcher.addURI(authority, ReadOnlyDbContract.PATH_CHARACTER_READ_ONLY, LEARN_CHINESE_CHARACTER_READ_ONLY);
         //matcher.addURI(authority, LearnChineseContract.PATH_CHARACTER_STATUS + "/" + LearnChineseContract.CharacterStatus.COLUMN_CHARACTER_ID +"/*", LEARN_CHINESE_CHARACTER_STATUS_WITH_CHARACTER_ID);
@@ -92,6 +95,7 @@ public class LearnChineseProvider extends ContentProvider {
             case LEARN_CHINESE_CHARACTER_WITH_NAME_LIST:
             case LEARN_CHINESE_CHARACTER_WITH_READ:
             case LEARN_CHINESE_CHARACTER_WITH_DISPLAY_SEQUENCE_AND_READ:
+            case LEARN_CHINESE_CHARACTER_WITH_ABILITY_TEST_SEQUENCE_AND_READ:
                 return LearnChineseContract.Character.CONTENT_TYPE;
 
             case LEARN_CHINESE_CHARACTER_WITH_NAME:
@@ -103,6 +107,7 @@ public class LearnChineseProvider extends ContentProvider {
                 return LearnChineseContract.CustomLearning.CONTENT_TYPE;
 
             case LEARN_CHINESE_CUSTOM_LEARNING_WITH_ID:
+            case LEARN_CHINESE_CUSTOM_LEARNING_WITH_NAME:
                 return LearnChineseContract.CustomLearning.CONTENT_ITEM_TYPE;
 
             case LEARN_CHINESE_CHARACTER_READ_ONLY:
@@ -148,7 +153,11 @@ public class LearnChineseProvider extends ContentProvider {
             LearnChineseContract.Character.TABLE_NAME +
                     "." +  LearnChineseContract.Character.COLUMN_DISPLAY_SEQUENCE + " <> ?  AND " +
                       LearnChineseContract.Character.COLUMN_READ + " = ? ";
-
+    //Character.ability_test_sequence > ? AND read = ?
+    private static final String sCharacterByAbilityTestSequenceAndReadSelection =
+            LearnChineseContract.Character.TABLE_NAME +
+                    "." +  LearnChineseContract.Character.COLUMN_ABILITY_TEST_SEQUENCE + " > ?  AND " +
+                    LearnChineseContract.Character.COLUMN_READ + " = ? ";
     //Characters._id = ?
     private static final String sCharacterByCharacterIdSelection =
             LearnChineseContract.Character.TABLE_NAME +
@@ -306,7 +315,23 @@ public class LearnChineseProvider extends ContentProvider {
                 sortOrder
         );
     }
+    private Cursor getCharacterByAbilityTestSequenceAndRead(
+            Uri uri, String[] projection, String sortOrder) {
 
+        String sequence = LearnChineseContract.Character.getTheSecondPara(uri);
+        String read = LearnChineseContract.Character.getTheThirdPara(uri);
+        Log.v(LOG_TAG, LearnChineseContract.Character.COLUMN_ABILITY_TEST_SEQUENCE + " <> " + sequence);
+        Log.v(LOG_TAG,"sort order = " + sortOrder);
+        sLearnChineseQueryBuilder.setTables(LearnChineseContract.Character.TABLE_NAME);
+        return sLearnChineseQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                sCharacterByAbilityTestSequenceAndReadSelection,
+                new String[]{sequence,read},
+                null,
+                null,
+                sortOrder
+        );
+    }
     private int DeleteTheCharacterById(Uri uri) {
 
         String id = LearnChineseContract.Character.getTheSecondPara(uri);
@@ -322,6 +347,10 @@ public class LearnChineseProvider extends ContentProvider {
     private static final String sCustomLearningByIdSelection =
             LearnChineseContract.CustomLearning.TABLE_NAME +
                     "." +  LearnChineseContract.CustomLearning.COLUMN_ID + " = ? ";
+    //CustomLearning.name = ?
+    private static final String sCustomLearningByNameSelection =
+            LearnChineseContract.CustomLearning.TABLE_NAME +
+                    "." +  LearnChineseContract.CustomLearning.COLUMN_NAME + " = ? ";
 
     private Cursor getAllCustomLearnings(
             Uri uri, String[] projection, String sortOrder) {
@@ -350,7 +379,21 @@ public class LearnChineseProvider extends ContentProvider {
                 sortOrder
         );
     }
+    private Cursor getCustomLearningByName(
+            Uri uri, String[] projection, String sortOrder) {
 
+        String name = LearnChineseContract.CustomLearning.getTheSecondPara(uri);
+        Log.v(LOG_TAG, LearnChineseContract.CustomLearning.COLUMN_NAME + " = " + name);
+        sLearnChineseQueryBuilder.setTables(LearnChineseContract.CustomLearning.TABLE_NAME);
+        return sLearnChineseQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                sCustomLearningByNameSelection,
+                new String[]{name},
+                null,
+                null,
+                sortOrder
+        );
+    }
     private int UpdateCustomLearningById(Uri uri, ContentValues values) {
 
         String id = LearnChineseContract.CustomLearning.getTheSecondPara(uri);
@@ -360,7 +403,15 @@ public class LearnChineseProvider extends ContentProvider {
                 new String[]{id});
 
     }
+    private int UpdateCustomLearningByName(Uri uri, ContentValues values) {
 
+        String name = LearnChineseContract.CustomLearning.getTheSecondPara(uri);
+
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        return db.update(LearnChineseContract.CustomLearning.TABLE_NAME, values, sCustomLearningByNameSelection,
+                new String[]{name});
+
+    }
     private int DeleteTheCustomLearningById(Uri uri) {
 
         String id = LearnChineseContract.CustomLearning.getTheSecondPara(uri);
@@ -428,12 +479,20 @@ public class LearnChineseProvider extends ContentProvider {
                 retCursor = getCharacterByDisplaySequenceAndRead(uri, projection, sortOrder);
                 break;
             }
+            case LEARN_CHINESE_CHARACTER_WITH_ABILITY_TEST_SEQUENCE_AND_READ: {
+                retCursor = getCharacterByAbilityTestSequenceAndRead(uri, projection, sortOrder);
+                break;
+            }
             case LEARN_CHINESE_CUSTOM_LEARNING: {
                 retCursor = getAllCustomLearnings(uri, projection, sortOrder);
                 break;
             }
             case LEARN_CHINESE_CUSTOM_LEARNING_WITH_ID: {
                 retCursor = getCustomLearningById(uri, projection, sortOrder);
+                break;
+            }
+            case LEARN_CHINESE_CUSTOM_LEARNING_WITH_NAME: {
+                retCursor = getCustomLearningByName(uri, projection, sortOrder);
                 break;
             }
             case LEARN_CHINESE_CHARACTER_READ_ONLY: {
@@ -531,6 +590,9 @@ public class LearnChineseProvider extends ContentProvider {
                 break;
             case LEARN_CHINESE_CUSTOM_LEARNING_WITH_ID:
                 rowsUpdated = UpdateCustomLearningById(uri, values);
+                break;
+            case LEARN_CHINESE_CUSTOM_LEARNING_WITH_NAME:
+                rowsUpdated = UpdateCustomLearningByName(uri, values);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

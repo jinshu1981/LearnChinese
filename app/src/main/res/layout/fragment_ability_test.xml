@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.xuzhi.learnchinese.AbilityTestFragment"
+    android:orientation="vertical">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ImageView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:src="@drawable/right_arrow"
+        android:id = "@+id/continue_image"
+        android:gravity="center"
+        android:background="@color/lightgray"/>
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id = "@+id/ability_test_characters"
+        android:columnWidth="90sp"
+        android:numColumns="4"
+        android:verticalSpacing="5sp"
+        android:horizontalSpacing="5sp"
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        android:minWidth="45dp">
+    </GridView>
+
+
+</LinearLayout>

@@ -19,8 +19,6 @@ import android.widget.Toast;
 
 import com.example.xuzhi.learnchinese.data.LearnChineseContract;
 
-import java.util.Calendar;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,7 +91,7 @@ public class AddCustomLearningActivityFragment extends Fragment implements Loade
                     Toast.makeText(getActivity(), "内容必须包含汉字", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                currentInfo = new CustomLearningInfo(theName, theContent, getCurrentDate(), generateCharacterName(theContent));
+                currentInfo = new CustomLearningInfo(theName, theContent, Utility.getCurrentDate(), generateCharacterName(theContent));
                 Log.v(LOG_TAG, "theContent = " + theContent);
                 getLoaderManager().initLoader(GET_CHARACTER_ID_LOADER, null, mThis);
             }
@@ -126,7 +124,7 @@ public class AddCustomLearningActivityFragment extends Fragment implements Loade
         Log.v(LOG_TAG,"characterName = " + characterName );
         return characterName.trim();
     }
-    public String getCurrentDate()
+   /* public String getCurrentDate()
     {
         Locale locale = Locale.getDefault();
         System.out.println("Locale is : [" + locale + "]"); // make sure there is a default Locale
@@ -135,7 +133,7 @@ public class AddCustomLearningActivityFragment extends Fragment implements Loade
                 Integer.toString(calendar.get(Calendar.MONTH) + 1) + "-" +
                 Integer.toString(calendar.get(Calendar.DATE));
         return date;
-    }
+    }*/
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {

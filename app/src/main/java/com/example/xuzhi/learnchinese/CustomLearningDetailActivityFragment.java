@@ -112,7 +112,7 @@ public class CustomLearningDetailActivityFragment extends Fragment implements Lo
             {
                 textColor[i][0] = cursor.getString(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_NAME));
                 textColor[i][1] = cursor.getString(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_READ));
-                Log.v(LOG_TAG,"i =" + i + ",textColor[0] = "+ textColor[i][0]+ ",textColor[1] = "+ textColor[i][1]);
+                //Log.v(LOG_TAG,"i =" + i + ",textColor[0] = "+ textColor[i][0]+ ",textColor[1] = "+ textColor[i][1]);
                 cursor.moveToNext();
             }
             String content = mCursor.getString(mCursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_CONTENT));
@@ -129,7 +129,7 @@ public class CustomLearningDetailActivityFragment extends Fragment implements Lo
                     }
                 }
             }
-            Log.v(LOG_TAG,"contentColor = " + contentColor.toString());
+            //Log.v(LOG_TAG,"contentColor = " + contentColor.toString());
             //文本内容
             SpannableString ss = new SpannableString(content);
             //设置0-2的字符颜色
@@ -142,13 +142,7 @@ public class CustomLearningDetailActivityFragment extends Fragment implements Lo
             contentView.setText(ss);
 
         }
-        //TextView content = (TextView)mRootView.findViewById(R.id.custom_learning_content);
 
-        //文本内容
-       // SpannableString ss = new SpannableString(cursor.getString(cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_CONTENT)));
-        //设置0-2的字符颜色
-        //ss.setSpan(new ForegroundColorSpan(Color.RED), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        //content.setText(ss);
 
     }
 

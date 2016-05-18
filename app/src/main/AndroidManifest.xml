@@ -34,6 +34,7 @@
         </activity>
         <activity
             android:name=".CustomLearningDetailActivity"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:label="@string/title_activity_custom_learning_detail" >
         </activity>
         <activity

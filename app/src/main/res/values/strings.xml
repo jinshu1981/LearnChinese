@@ -15,6 +15,13 @@
     <string name="dialog_edit">编辑</string>
     <string name="dialog_delete">删除</string>
     <string name="title_activity_learned_characters">已学会的汉字</string>
+
+    <string name="dialog_test_result_title">测试结果</string>
+    <string name="dialog_confirm">确定</string>
+    <string name="title_">已学会的汉字</string>
+
+    <string name="dialog_select_learning_title">选择学习内容</string>
+
     <!-- <string name="title_activity_character_detail">CharacterDetailActivity</string> -->
      <string name="title_activity_custom_define_pronounciation">新增自定义发音</string>
      <string-array name="tone_type">
