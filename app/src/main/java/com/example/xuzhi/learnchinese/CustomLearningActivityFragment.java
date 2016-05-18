@@ -95,7 +95,7 @@ public class CustomLearningActivityFragment extends Fragment implements LoaderMa
                     null,
                     null,
                     sortOrder);
-        }else if (i == GENERATE_CHARACTER_SEQUENCE_LOADER){
+        }/*else if (i == GENERATE_CHARACTER_SEQUENCE_LOADER){
             if (bundle == null) return null;
             String sortOrder = LearnChineseContract.Character.COLUMN_ID + " ASC";
             mCharacterSequence = bundle.getString("characterSequence");
@@ -107,7 +107,7 @@ public class CustomLearningActivityFragment extends Fragment implements LoaderMa
                     null,
                     null,
                     sortOrder);
-        }
+        }*/
         else if (i == CLEAR_CHARACTER_SEQUENCE_LOADER)
         {
             String sortOrder = LearnChineseContract.Character.COLUMN_ID + " ASC";
@@ -150,7 +150,7 @@ public class CustomLearningActivityFragment extends Fragment implements LoaderMa
             //Utility.setCustomLearningTag(getActivity(),"");
 
         }
-        else if (id == GENERATE_CHARACTER_SEQUENCE_LOADER){
+        /*else if (id == GENERATE_CHARACTER_SEQUENCE_LOADER){
             Log.v(LOG_TAG,"GENERATE_CHARACTER_SEQUENCE_LOADER cursorCount = " + cursorCount);
             cursor.moveToFirst();
             ContentValues value = new ContentValues();
@@ -163,7 +163,7 @@ public class CustomLearningActivityFragment extends Fragment implements LoaderMa
                         value, null, null);
                 cursor.moveToNext();
             }
-        }
+        }*/
         else{
 
         }

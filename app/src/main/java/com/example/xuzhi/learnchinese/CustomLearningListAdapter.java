@@ -147,8 +147,22 @@ public class CustomLearningListAdapter extends CursorAdapter {
 
     void updateCharacterSequence(int loaderId,String characterSequence)
     {
-        Bundle bundle = new Bundle();
-        bundle.putString("characterSequence",characterSequence);
-        mFragment.getLoaderManager().restartLoader(loaderId,bundle,mFragment);
+        if (loaderId == mFragment.CLEAR_CHARACTER_SEQUENCE_LOADER){
+
+            Bundle bundle = new Bundle();
+            bundle.putString("characterSequence",characterSequence);
+            mFragment.getLoaderManager().restartLoader(loaderId,bundle,mFragment);
+        }
+        else {
+            ContentValues value = new ContentValues();
+            String[] sequence = characterSequence.split(",");
+
+            for (int i = 0; i < sequence.length; i++) {
+                int id = Integer.parseInt(sequence[i]);
+                value.put(LearnChineseContract.Character.COLUMN_DISPLAY_SEQUENCE, i + 1);
+                mContext.getContentResolver().update(LearnChineseContract.Character.buildCharacterUriById(id),
+                        value, null, null);
+            }
+        }
     }
 }
