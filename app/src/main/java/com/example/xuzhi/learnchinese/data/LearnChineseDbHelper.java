@@ -1,12 +1,18 @@
 package com.example.xuzhi.learnchinese.data;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.xuzhi.learnchinese.data.LearnChineseContract.Character;
 import com.example.xuzhi.learnchinese.data.LearnChineseContract.CustomLearning;
+
+import java.util.Collections;
+
 /**
  * Created by xuzhi on 2016/3/3.
  */
@@ -41,6 +47,8 @@ public class LearnChineseDbHelper  extends SQLiteOpenHelper {
                 CustomLearning.COLUMN_CONTENT+ " TEXT    NOT NULL, " +
                 CustomLearning.COLUMN_DATE + " TEXT    NOT NULL, " +
                 CustomLearning.COLUMN_STATUS + " TEXT    NOT NULL, " +
+                CustomLearning.COLUMN_PERCENTAGE + " TEXT    NOT NULL, " +
+                CustomLearning.COLUMN_CONTENT_TAG + " TEXT    NOT NULL, " +
                 CustomLearning.COLUMN_CHARACTER_SEQUENCE + " INTEGER    NOT NULL);";
 
         sqLiteDatabase.execSQL(SQL_CREATE_CHARACTERS_TABLE);
@@ -58,5 +66,48 @@ public class LearnChineseDbHelper  extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Character.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + CustomLearning.TABLE_NAME);
         onCreate(sqLiteDatabase);
+    }
+
+    /**
+     * Return a cursor object with all rows in the table.
+     * @return A cursor suitable for use in a SimpleCursorAdapter
+     */
+    public Cursor getAllCustomLearningItem() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null) {
+            return null;
+        }
+        return db.rawQuery("select * from " + CustomLearning.TABLE_NAME +" order by " + CustomLearning.COLUMN_ID , null);
+    }
+
+    /**
+     * Return a cursor object with all rows in the table.
+     * @return A cursor suitable for use in a SimpleCursorAdapter
+     */
+    public Cursor getCharactersByNameList(String nameList) {
+        String[] nameArray = nameList.split("");
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db == null) {
+            return null;
+        }
+        return db.rawQuery("select * from " + Character.TABLE_NAME +" where "+ Character.COLUMN_NAME + " IN (" + TextUtils.join(",", Collections.nCopies(nameArray.length, "?")) + ")" + " order by " + CustomLearning.COLUMN_ID , nameArray);
+    }
+    /**
+     * Updates a row in the database table with new column values, without changing the unique id of the row.
+     * For simplicity reasons, nothing happens if this operation fails.
+     * @param id The unique id of the row to update
+     * @param percentage The new percentage value
+     * @param contentTag The new priority value
+     */
+    public void updateCustomLearningPercentage(int id, String percentage,String contentTag) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        if (db == null) {
+            return;
+        }
+        ContentValues row = new ContentValues();
+        row.put(CustomLearning.COLUMN_PERCENTAGE, percentage);
+        row.put(CustomLearning.COLUMN_CONTENT_TAG, contentTag);
+        db.update(CustomLearning.TABLE_NAME, row, "_id = ?", new String[] { String.valueOf(id) } );
+        db.close();
     }
 }

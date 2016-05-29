@@ -34,8 +34,8 @@
         </activity>
         <activity
             android:name=".CustomLearningDetailActivity"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:label="@string/title_activity_custom_learning_detail" >
+            android:label="@string/title_activity_custom_learning_detail"
+            android:windowSoftInputMode="stateAlwaysHidden" >
         </activity>
         <activity
             android:name=".AddCustomLearningActivity"
@@ -52,6 +52,10 @@
         <activity
             android:name=".CustomPronunciationActivity"
             android:label="@string/title_activity_custom_pronunciation" >
+        </activity>
+        <activity
+            android:name=".AbilityTestActivity"
+            android:label="@string/title_activity_ability_test" >
         </activity>
     </application>
 

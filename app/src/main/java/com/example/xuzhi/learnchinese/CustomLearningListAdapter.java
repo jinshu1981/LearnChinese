@@ -3,13 +3,14 @@ package com.example.xuzhi.learnchinese;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.xuzhi.learnchinese.data.LearnChineseContract;
@@ -20,9 +21,10 @@ import com.example.xuzhi.learnchinese.data.LearnChineseContract;
 public class CustomLearningListAdapter extends CursorAdapter {
     private final String LOG_TAG = this.getClass().getSimpleName();
     private Context mContext;
-    private static final String UN_START = "未学习";
-    private static final String IN_PROGRESS = "学习中";
-    private static final String DONE = "已学完";
+    //private static String learning_status;
+    //private static final String UN_START = "未学习";
+    //private static final String IN_PROGRESS = "学习中";
+    //private static final String DONE = "已学完";
     private CustomLearningActivityFragment mFragment;
     //private int id;
     public CustomLearningListAdapter(Context context, Cursor c, int flags,CustomLearningActivityFragment fragment) {
@@ -62,74 +64,88 @@ public class CustomLearningListAdapter extends CursorAdapter {
         String textString1 = cursor.getString(textIndex1);
         text1.setText(textString1);
 
-        TextView learningStatus =  (TextView)view.findViewById(R.id.learning_status);
+        TextView percentage =  (TextView)view.findViewById(R.id.percentage);
+        int percentageIndex = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_PERCENTAGE);
+        percentage.setText(cursor.getString(percentageIndex));
+
+        ImageView learningImage = (ImageView)view.findViewById(R.id.learning_image);
         String learning_status = cursor.getString(cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_STATUS));
         switch (learning_status)
         {
             case LearnChineseContract.NO:
-                learningStatus.setText(UN_START);
-                learningStatus.setTextColor(mContext.getResources().getColor(R.color.black));
+                //Log.v(LOG_TAG,"set learning_status NO");
+                learningImage.setImageResource(R.drawable.circle_waiting);
+                learningImage.setTag(LearnChineseContract.NO);
+                //learningStatus.setTextColor(mContext.getResources().getColor(R.color.black));
                 break;
             case LearnChineseContract.YES:
-                learningStatus.setText(IN_PROGRESS);
-                learningStatus.setTextColor(mContext.getResources().getColor(R.color.green));
+                //Log.v(LOG_TAG,"set learning_status YES");
+                learningImage.setImageResource(R.drawable.circle_learning);
+                learningImage.setTag(LearnChineseContract.YES);
+                //learningStatus.setText(IN_PROGRESS);
+                //learningStatus.setTextColor(mContext.getResources().getColor(R.color.green));
                 break;
-            case LearnChineseContract.DONE:
+            /*case LearnChineseContract.DONE:
                 learningStatus.setText(DONE);
                 learningStatus.setTextColor(mContext.getResources().getColor(R.color.black));
-                break;
+                break;*/
             default:
                 break;
         }
-        learningStatus.setOnClickListener(new View.OnClickListener() {
+        learningImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 View view =  (View)v.getParent();
                 View grandpaView =  (View)view.getParent();
-                TextView status = (TextView)grandpaView.findViewById(R.id.learning_status);
+                //ImageView learningImageView = (ImageView)grandpaView.findViewById(R.id.learning_image);
+                ProgressBar progressBar = (ProgressBar)view.findViewById(R.id.marker_progress);
                 TextView infoString = (TextView)grandpaView.findViewById(R.id.invisible_info);
-                Log.v(LOG_TAG,"status = " + status.getText().toString()+ ",infoString = "+ infoString.getText().toString());
-                updateLearningStatus(status,infoString.getText().toString());
+                //Log.v(LOG_TAG,"status = " + toString()+ ",infoString = "+ infoString.getText().toString());
+                updateLearningStatus((ImageView)v,(ProgressBar)progressBar,infoString.getText().toString());
             }
         });
 
 
     }
-    void updateLearningStatus(TextView view,String infoString)
+    void updateLearningStatus(ImageView view,ProgressBar progressBar,String infoString)
     {
-        String status = view.getText().toString();
+        //String status = view.getText().toString();
+        String resourceTag = (String)(view.getTag());
+        //Log.v(LOG_TAG,"resource = " + resourceTag);
         String customLearningTag = Utility.getCustomLearningTag((FragmentActivity) mFragment.getActivity());
         String[] info = infoString.split("/");
         String idString = info[0];
         String characterSequence = info[1];
         Log.v(LOG_TAG,"customLearningTag = " + customLearningTag);
-        switch (status){
-            case UN_START:
+        switch (resourceTag){
+            case LearnChineseContract.NO:
                 if (customLearningTag.equals("")){
-                    view.setText(IN_PROGRESS);
+                    //view.setImageResource(R.drawable.circle_learning);
+                    view.setTag(LearnChineseContract.YES);
                     ContentValues value = new ContentValues();
                     value.put(LearnChineseContract.CustomLearning.COLUMN_STATUS,LearnChineseContract.YES);
                     mContext.getContentResolver().update(LearnChineseContract.CustomLearning.buildCustomLearningUriById(idString), value, null, null);
                     Utility.setCustomLearningTag((FragmentActivity)mFragment.getActivity(),idString);
-                    updateCharacterSequence(mFragment.GENERATE_CHARACTER_SEQUENCE_LOADER, characterSequence);
+                    updateCharacterSequence(view,progressBar,mFragment.GENERATE_CHARACTER_SEQUENCE_LOADER, characterSequence);
                 }else
                 {
                     //do nothing except show the hint
                     Log.v(LOG_TAG,"do nothing but show the hint");
                 }
                 break;
-            case IN_PROGRESS:
+            case LearnChineseContract.YES:
             {
                 ContentValues value = new ContentValues();
-                value.put(LearnChineseContract.CustomLearning.COLUMN_STATUS, LearnChineseContract.DONE);
+                value.put(LearnChineseContract.CustomLearning.COLUMN_STATUS, LearnChineseContract.NO);
                 mContext.getContentResolver().update(LearnChineseContract.CustomLearning.buildCustomLearningUriById(idString), value, null, null);
 
                 Utility.setCustomLearningTag((FragmentActivity) mFragment.getActivity(), "");
-                updateCharacterSequence(mFragment.CLEAR_CHARACTER_SEQUENCE_LOADER,characterSequence);
-                view.setText(DONE);
+                updateCharacterSequence(view,progressBar,mFragment.CLEAR_CHARACTER_SEQUENCE_LOADER, characterSequence);
+                //view.setImageResource(R.drawable.circle_waiting);
+                view.setTag(LearnChineseContract.NO);
                 break;
             }
-
+/*
             case DONE:
             {
                 ContentValues value = new ContentValues();
@@ -137,7 +153,7 @@ public class CustomLearningListAdapter extends CursorAdapter {
                 mContext.getContentResolver().update(LearnChineseContract.CustomLearning.buildCustomLearningUriById(idString), value, null, null);
                 view.setText(UN_START);
                 break;
-            }
+            }*/
 
             default:
                 break;
@@ -145,24 +161,12 @@ public class CustomLearningListAdapter extends CursorAdapter {
     }
 
 
-    void updateCharacterSequence(int loaderId,String characterSequence)
+    void updateCharacterSequence(ImageView view,ProgressBar progressBar,int loaderId,String characterSequence)
     {
-        if (loaderId == mFragment.CLEAR_CHARACTER_SEQUENCE_LOADER){
-
-            Bundle bundle = new Bundle();
-            bundle.putString("characterSequence",characterSequence);
-            mFragment.getLoaderManager().restartLoader(loaderId,bundle,mFragment);
-        }
-        else {
-            ContentValues value = new ContentValues();
-            String[] sequence = characterSequence.split(",");
-
-            for (int i = 0; i < sequence.length; i++) {
-                int id = Integer.parseInt(sequence[i]);
-                value.put(LearnChineseContract.Character.COLUMN_DISPLAY_SEQUENCE, i + 1);
-                mContext.getContentResolver().update(LearnChineseContract.Character.buildCharacterUriById(id),
-                        value, null, null);
-            }
-        }
+            view.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            GenerateDisplaySequenceTask task = new GenerateDisplaySequenceTask(mContext,view,progressBar);
+            Log.v(LOG_TAG,"characterSequence = " + characterSequence);
+            task.execute(Integer.toString(loaderId), characterSequence);
     }
 }

@@ -49,7 +49,14 @@ public class LearnedCharactersAdapter extends CursorAdapter{
         Utility.setBoldTextStyle(text);
         //Typeface tf1 = Typeface.createFromAsset(mContext.getAssets(), "fonts/simkai.ttf");//设置字体为楷体
         text.setTypeface(tf1);
-        text.setTextColor(mContext.getResources().getColor(R.color.green));
+        if (mContext.getClass().getSimpleName().equals("LearnedCharactersActivity")){
+            text.setTextColor(mContext.getResources().getColor(R.color.green));
+        }
+        else
+        {
+            text.setTextColor(mContext.getResources().getColor(R.color.black));
+        }
+        text.setVisibility(View.VISIBLE);
     }
 
 }

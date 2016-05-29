@@ -24,7 +24,7 @@ public class ParentsOptionsActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_parents_options, container, false);
         final ListView listView = (ListView)mRootView.findViewById(R.id.parents_options_list);
-        final String[] usersMenu = {"已学会的汉字","自定义学习内容","自定义发音"};
+        final String[] usersMenu = {"已学会的汉字","自定义学习内容","自定义发音","汉字能力测试"};
         mUsersListAdapter =
                 new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, usersMenu);
         listView.setAdapter(mUsersListAdapter);
@@ -47,6 +47,10 @@ public class ParentsOptionsActivityFragment extends Fragment {
                     case "自定义发音":
                         intent = new Intent(getActivity(), CustomPronunciationActivity.class);
                         //intent = new Intent(getActivity(), CustomDefinePronunciationActivity.class);
+                        startActivity(intent);
+                        break;
+                    case "汉字能力测试":
+                        intent = new Intent(getActivity(), AbilityTestActivity.class);
                         startActivity(intent);
                         break;
 

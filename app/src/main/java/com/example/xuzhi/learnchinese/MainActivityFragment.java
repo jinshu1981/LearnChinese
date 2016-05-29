@@ -62,10 +62,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
             sounds = cursor.getString(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_PRONUNCIATION));
             readFlag = cursor.getString(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_READ));
-            //writeFlag = cursor.getString(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_WRITE));
-            //doneFlag = cursor.getString(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_DONE));
-            //Log.v(LOG_TAG,"character = " + character + ",display sequence = " + cursor.getInt(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_DISPLAY_SEQUENCE)));
-        }
+       }
     }
     CharacterInfo[] mCharacters;
     static int index = 0;
@@ -105,10 +102,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 }
 
                 ContentValues value = new ContentValues();
-                value.put(LearnChineseContract.Character.COLUMN_READ,mCharacters[index].readFlag);
+                value.put(LearnChineseContract.Character.COLUMN_READ, mCharacters[index].readFlag);
                 getActivity().getContentResolver().update(
                         LearnChineseContract.Character.buildCharacterUriById(mCharacters[index].id),
                         value, null, null);
+                CalculatePercentageTask task = new CalculatePercentageTask(getActivity());
+                task.execute(mCharacters[index].character, mCharacters[index].readFlag);
 
             }
         });

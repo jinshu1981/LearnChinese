@@ -16,6 +16,10 @@
         android:id = "@+id/custom_learning_date"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+    <!--<ProgressBar android:indeterminate="true"
+        android:layout_width="50dp" android:layout_height="50dp"
+        android:id="@+id/marker_progress" style="?android:attr/progressBarStyle"
+        android:layout_gravity="center_vertical|center_horizontal"/>-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

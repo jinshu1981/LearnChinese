@@ -91,7 +91,7 @@ public class AddCustomLearningActivityFragment extends Fragment implements Loade
                     Toast.makeText(getActivity(), "内容必须包含汉字", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                currentInfo = new CustomLearningInfo(theName, theContent, Utility.getCurrentDate(), generateCharacterName(theContent));
+                currentInfo = new CustomLearningInfo(theName, theContent, Utility.getCurrentDate(), Utility.generateCharacterName(theContent));
                 Log.v(LOG_TAG, "theContent = " + theContent);
                 getLoaderManager().initLoader(GET_CHARACTER_ID_LOADER, null, mThis);
             }
@@ -107,33 +107,6 @@ public class AddCustomLearningActivityFragment extends Fragment implements Loade
         result = matcher.find();
         return result;
     }
-
-    public String generateCharacterName(String sequence) {
-        final String format =  "[^\\u4e00-\\u9fa5]";//所有非汉字
-        Pattern pattern = Pattern.compile(format);
-
-        String characterName;
-        Matcher matcher = pattern.matcher(sequence);
-        characterName = matcher.replaceAll("");
-        // Log.v(LOG_TAG," sequence  = " + sequence );
-       // Log.v(LOG_TAG," matcher.groupCount()  = " +  matcher.groupCount() );
-       /* for (int i = 0;i < matcher.groupCount();i++)
-        {
-            characterName = characterName + matcher.group(i).toString() +",";
-        }*/
-        Log.v(LOG_TAG,"characterName = " + characterName );
-        return characterName.trim();
-    }
-   /* public String getCurrentDate()
-    {
-        Locale locale = Locale.getDefault();
-        System.out.println("Locale is : [" + locale + "]"); // make sure there is a default Locale
-        Calendar calendar = Calendar.getInstance(locale);
-        String date = Integer.toString(calendar.get(Calendar.YEAR)) + "-" +
-                Integer.toString(calendar.get(Calendar.MONTH) + 1) + "-" +
-                Integer.toString(calendar.get(Calendar.DATE));
-        return date;
-    }*/
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -173,31 +146,55 @@ public class AddCustomLearningActivityFragment extends Fragment implements Loade
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 
         int cursorCount = cursor.getCount();
-        if ((cursor == null)||(cursorCount == 0)) {
-            Log.v(LOG_TAG, " return cursorLoader.getId() = " + cursorLoader.getId());
+        if ((cursor == null)) {
+            Log.v(LOG_TAG, " cursor == null,return cursorLoader.getId() = " + cursorLoader.getId());
+            return;
+        }
+        if (cursorCount == 0)
+        {
+            Log.v(LOG_TAG, "unknown characters = " + currentInfo.characterNames);
+            //new UnknownCharactersNoticeDialogFragment().show(getFragmentManager(),"UnknownCharacters");
+            Toast.makeText(getActivity(), "抱歉！字库中不包含这些汉字，学习条目无法创建。", Toast.LENGTH_LONG).show();
+            getActivity().finish();
             return;
         }
         int id = cursorLoader.getId();
         if (id == GET_CHARACTER_ID_LOADER) {
-            String characterIdSequence = "";
+            String characterIdSequence = "",contentTag = "";
+            int readCharacterNum = 0;
             cursor.moveToFirst();
             String[] charactersNameArray = currentInfo.characterNames.trim().split("");//转换结果会多出一个""
+            Log.v(LOG_TAG,"charactersNameArray length = " + (charactersNameArray.length - 1) + "cursor.count = " + cursor.getCount());
             for (int i = 0; i < charactersNameArray.length; i++) {
                 int j = 0;
-                Log.v(LOG_TAG, "i = " + i + ",charactersNameArray[i] = " + charactersNameArray[i]);
+
+                //Log.v(LOG_TAG, "i = " + i + ",charactersNameArray[i] = " + charactersNameArray[i]);
                 if (charactersNameArray[i].isEmpty()) continue;
+
+                /*获取的cursor个数过滤了重复汉字，例如：“床前明月光床前明月光”，10个汉字仅能获取5个cursor*/
                 for (j = 0; j < cursorCount; j++) {
                     if (cursor.getString(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_NAME)).equals(charactersNameArray[i])) {
 
                         characterIdSequence = characterIdSequence + Integer.toString(cursor.getInt(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_ID))) + ",";
+                        if (cursor.getString(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_READ)).equals(LearnChineseContract.YES)) {
+                            contentTag += "1";
+                            readCharacterNum++;
+                        }
+                        else
+                        {
+                            contentTag +="0";
+                        }
                         cursor.moveToFirst();
                         break;
                     } else {
                         cursor.moveToNext();
                     }
                 }
+                /*字库中不包括学习内容的汉字*/
                 if (j == cursorCount) {
                     characterIdSequence = characterIdSequence + "0" + ",";
+                    contentTag +="2";
+                    Log.v(LOG_TAG,"unknown character = " + charactersNameArray[i]);
                     cursor.moveToFirst();
                 }
             }
@@ -210,10 +207,12 @@ public class AddCustomLearningActivityFragment extends Fragment implements Loade
             value.put(LearnChineseContract.CustomLearning.COLUMN_CONTENT, currentInfo.content);
             value.put(LearnChineseContract.CustomLearning.COLUMN_STATUS, LearnChineseContract.NO);
             value.put(LearnChineseContract.CustomLearning.COLUMN_CHARACTER_SEQUENCE, characterIdSequence);
+            value.put(LearnChineseContract.CustomLearning.COLUMN_PERCENTAGE,Integer.toString(readCharacterNum)+"/" + Integer.toString(charactersNameArray.length - 1));
+            value.put(LearnChineseContract.CustomLearning.COLUMN_CONTENT_TAG,contentTag);
             if (isNewCustom == true) {
                 getActivity().getContentResolver().insert(LearnChineseContract.CustomLearning.CONTENT_URI, value);
             } else {
-                //getActivity().getContentResolver().update(LearnChineseContract.CustomLearning.buildCustomLearningUriById(mCustomId), value, null, null);
+
                 /*更新自定义学习的汉字顺序*/
                 if (Integer.toString(mCustomId).equals(Utility.getCustomLearningTag(getActivity()))) {
                     value.put(LearnChineseContract.CustomLearning.COLUMN_STATUS, LearnChineseContract.YES);
@@ -224,7 +223,6 @@ public class AddCustomLearningActivityFragment extends Fragment implements Loade
                 getActivity().getContentResolver().update(LearnChineseContract.CustomLearning.buildCustomLearningUriById(mCustomId), value, null, null);
             }
             Log.v(LOG_TAG, "onLoadFinished id = " + id);
-            //cursor.requery();
             /*back to previous activity*/
             getActivity().finish();
         }
@@ -269,5 +267,23 @@ public class AddCustomLearningActivityFragment extends Fragment implements Loade
         Log.v(LOG_TAG,"getSequenceNumber failed ");
         return 0;
     }
+    /*public static class UnknownCharactersNoticeDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState)
+        {
 
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.dialog_notice_title);
+            builder.setMessage("抱歉！字库中不包含这些汉字，学习条目无法创建。");
+            builder.setNegativeButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    getActivity().finish();
+                }
+            });
+
+
+            return builder.create();
+        }
+    }*/
 }

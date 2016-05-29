@@ -18,6 +18,9 @@ import android.widget.TextView;
 
 import com.example.xuzhi.learnchinese.data.LearnChineseContract;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -99,10 +102,56 @@ public class CustomLearningDetailActivityFragment extends Fragment implements Lo
 
             contentView =  (TextView)mRootView.findViewById(R.id.custom_learning_content);
 
-            String characterSequence = cursor.getString(cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_CHARACTER_SEQUENCE));
+            /*String characterSequence = cursor.getString(cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_CHARACTER_SEQUENCE));
             Bundle bundle = new Bundle();
             bundle.putString(LearnChineseContract.CustomLearning.COLUMN_CHARACTER_SEQUENCE, characterSequence);
-            getLoaderManager().initLoader(CUSTOM_LEARNING_TEXT_COLOR_LOADER, bundle, this);
+            getLoaderManager().initLoader(CUSTOM_LEARNING_TEXT_COLOR_LOADER, bundle, this);*/
+            String content = mCursor.getString(mCursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_CONTENT));
+            Log.v(LOG_TAG,"content len =" + content.length());
+            String contentTag = cursor.getString(cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_CONTENT_TAG));
+            String[] contentTagArray = contentTag.split("");
+
+            //文本内容
+            SpannableString ss = new SpannableString(content);
+            final String format =  "[\\u4e00-\\u9fa5]";//所有汉字
+            Pattern pattern = Pattern.compile(format);
+            Matcher matcher = pattern.matcher(content);
+            //设置0-2的字符颜色
+            for (int i = 0,j = 1;i < content.length();i++)
+            {
+                if (matcher.find())
+                {
+                    //Log.v(LOG_TAG,"i = " + i + "content = " + content.subSequence(i,i+1)+"start = " + matcher.start());
+                    int color;
+                    switch (contentTagArray[j])
+                    {
+                        case "0":
+                            color = getResources().getColor(R.color.black);
+                            break;
+                        case "1":
+                            color = getResources().getColor(R.color.green);
+                            break;
+                        case "2":
+                            color = getResources().getColor(R.color.lightpink);
+                            break;
+                        default:
+                            color = getResources().getColor(R.color.lightpink);
+                            break;
+                    }
+                    //int color = contentTagArray[j].equals("1")?getResources().getColor(R.color.green):getResources().getColor(R.color.black);
+                    ss.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.start()+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    j++;
+                    if ((j-1) > content.length()){
+                        Log.v(LOG_TAG,"j-1 = " + (j-1) + "i = " + i);
+                        //break;
+                    }
+                }
+            }
+            //ProgressBar progressBar =  (ProgressBar)mRootView.findViewById(R.id.marker_progress);
+            //progressBar.setVisibility(View.GONE);
+            contentView.setText(ss);
+
+
         }
         else if (cursorId == CUSTOM_LEARNING_TEXT_COLOR_LOADER)
         {
@@ -138,7 +187,8 @@ public class CustomLearningDetailActivityFragment extends Fragment implements Lo
                 int color = contentColor[i].equals(LearnChineseContract.YES)?getResources().getColor(R.color.green):getResources().getColor(R.color.black);
                 ss.setSpan(new ForegroundColorSpan(color), i, i+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
-
+            //ProgressBar progressBar =  (ProgressBar)mRootView.findViewById(R.id.marker_progress);
+            //progressBar.setVisibility(View.GONE);
             contentView.setText(ss);
 
         }

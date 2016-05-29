@@ -14,13 +14,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.xuzhi.learnchinese.data.LearnChineseContract;
@@ -47,9 +47,12 @@ public class AbilityTestFragment extends Fragment implements LoaderManager.Loade
     static final int TEST_CHARACTERS_PERPAGE = 0;
     View rootView;
     GridView abilityTestCharactersGridView;
-    ImageView continueImage;
+    TextView nextTextView,finishTextView;
+    static TextView learnedCharacterTextView;
+    static int learnedCharacterNum = 0;
     LearnedCharactersAdapter mAdapter;
     static ArrayList mLearnedCharactersList = new ArrayList();
+    static ArrayList mLearnedCharactersNameList = new ArrayList();
     private final String LOG_TAG = this.getClass().getSimpleName();
     static final int ABILITY_TEST_CHARACTER_LOADER = 0;
     static final int GET_LEARNING_CHARACTERS_LOADER = 1;
@@ -98,9 +101,11 @@ public class AbilityTestFragment extends Fragment implements LoaderManager.Loade
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_ability_test, container, false);
         abilityTestCharactersGridView = (GridView)rootView.findViewById(R.id.ability_test_characters);
-        continueImage = (ImageView)rootView.findViewById(R.id.continue_image);
+        nextTextView = (TextView)rootView.findViewById(R.id.next);
+        finishTextView = (TextView)rootView.findViewById(R.id.finish);
         mAdapter = new LearnedCharactersAdapter(getActivity(),null,0);
         abilityTestCharactersGridView.setAdapter(mAdapter);
+        learnedCharacterTextView = (TextView)rootView.findViewById(R.id.learned_number);
         abilityTestCharactersGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -108,42 +113,70 @@ public class AbilityTestFragment extends Fragment implements LoaderManager.Loade
                 if (cursor != null) {
                     int idIndex = cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_ID);
                     int characterId = cursor.getInt(idIndex);
+                    int nameIndex = cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_NAME);
+                    String characterName = cursor.getString(nameIndex);
                     TextView characterView = (TextView) (view.findViewById(R.id.LearnedCharacter));
+
                     if (mLearnedCharactersList.contains(characterId)) {
                         mLearnedCharactersList.remove((Integer)characterId);
+                        mLearnedCharactersNameList.remove(characterName);
                         characterView.setTextColor(getResources().getColor(R.color.black));
+                        learnedCharacterNum--;
                     } else {
                         mLearnedCharactersList.add(characterId);
+                        mLearnedCharactersNameList.add(characterName);
                         characterView.setTextColor(getResources().getColor(R.color.green));
+                        learnedCharacterNum++;
                     }
+                    learnedCharacterTextView.setText(Integer.toString(learnedCharacterNum));
                 }
             }
         });
-        continueImage.setOnClickListener(new View.OnClickListener() {
+        nextTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                unknownCharactersNumber = unknownCharactersNumber  + (testCharactersPerPage - mLearnedCharactersList.size());
-                knownCharactersNumber = knownCharactersNumber + mLearnedCharactersList.size();
-                Log.v(LOG_TAG,"unknownCharactersNumber = " + unknownCharactersNumber);
-                Log.v(LOG_TAG,"unknownCharactersNumber = " + unknownCharactersNumber);
                 ContentValues value = new ContentValues();
                 value.put(LearnChineseContract.Character.COLUMN_READ, LearnChineseContract.YES);
                 int charactersId = 0;
+                /*update learned characters db table*/
+                for (int i = 0; i < mLearnedCharactersList.size(); i++) {
+                    charactersId = (int) mLearnedCharactersList.get(i);
+                    getActivity().getContentResolver().update(LearnChineseContract.Character.buildCharacterUriById(charactersId), value, null, null);
+                }
+
+                /*calculate percentage and generate display color*/
+                String totalCharactersName = TextUtils.join("", mLearnedCharactersNameList.toArray());
+                Log.v(LOG_TAG, "totalCharactersName = " + totalCharactersName);
+                CalculatePercentageTask task = new CalculatePercentageTask(getActivity());
+                task.execute(totalCharactersName, LearnChineseContract.YES);
+
+                /*load next page*/
+                Bundle bundle = new Bundle();
+                bundle.putInt("startIndex", startSequenceIndex);
+                getLoaderManager().restartLoader(ABILITY_TEST_CHARACTER_LOADER, bundle, mThis);
+            }
+        });
+        finishTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentValues value = new ContentValues();
+                value.put(LearnChineseContract.Character.COLUMN_READ, LearnChineseContract.YES);
+                int charactersId = 0;
+                /*update learned characters db table*/
                 for(int i = 0;i < mLearnedCharactersList.size();i++) {
                     charactersId = (int)mLearnedCharactersList.get(i);
                     getActivity().getContentResolver().update(LearnChineseContract.Character.buildCharacterUriById(charactersId), value, null, null);
                 }
-                if (unknownCharactersNumber < UNKNOWN_CHARACTERS_LIMIT)
-                {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("startIndex",startSequenceIndex);
-                    getLoaderManager().restartLoader(ABILITY_TEST_CHARACTER_LOADER, bundle, mThis);
-                }
-                else/*end the test*/
-                {
 
-                    new TestResultDialogFragment().show(getFragmentManager(), "TestResultDialogFragment");
-                }
+                /*calculate percentage and generate display color*/
+                String totalCharactersName = TextUtils.join("",mLearnedCharactersNameList.toArray());
+                Log.v(LOG_TAG,"totalCharactersName = " + totalCharactersName);
+                CalculatePercentageTask task = new CalculatePercentageTask(getActivity());
+                task.execute(totalCharactersName,LearnChineseContract.YES);
+
+                /*finish the test*/
+                new TestResultDialogFragment().show(getFragmentManager(), "TestResultDialogFragment");
+
             }
         });
 
@@ -212,7 +245,6 @@ public class AbilityTestFragment extends Fragment implements LoaderManager.Loade
         if ((cursor==null)||(cursor.getCount() == 0))
         {
             Log.v(LOG_TAG, " return cursorLoader.getId()" + cursorLoader.getId());
-
             return;
         }
 
@@ -220,19 +252,31 @@ public class AbilityTestFragment extends Fragment implements LoaderManager.Loade
         Log.v(LOG_TAG, "onLoadFinished,cursorId = " + cursorId);
         if (cursorId == ABILITY_TEST_CHARACTER_LOADER) {
             mLearnedCharactersList.clear();
-            cursor.moveToFirst();
+            mLearnedCharactersNameList.clear();
+            //cursor.moveToFirst();
             testCharactersPerPage = cursor.getCount();
+            Log.v(LOG_TAG,"cursor.getCount() = " + cursor.getCount());
+
+            /*获取下一页面起始id*/
+            cursor.moveToLast();
+            int sequenceIndex = cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_ABILITY_TEST_SEQUENCE);
+            int sequence = cursor.getInt(sequenceIndex);
+            startSequenceIndex = sequence;
+            /*
             for (int i = 0; i < cursor.getCount(); i++) {
                 int idIndex = cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_ID);
                 int id = cursor.getInt(idIndex);
+                int nameIndex = cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_NAME);
+                String characterName = cursor.getString(nameIndex);
                 mLearnedCharactersList.add(id);
+                mLearnedCharactersNameList.add(characterName);
                 cursor.moveToNext();
                 if (cursor.isLast()) {
                     int sequenceIndex = cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_ABILITY_TEST_SEQUENCE);
                     int sequence = cursor.getInt(sequenceIndex);
                     startSequenceIndex = sequence;
                 }
-            }
+            }*/
             cursor.moveToFirst();
             mAdapter.swapCursor(cursor);
         }
@@ -267,14 +311,22 @@ public class AbilityTestFragment extends Fragment implements LoaderManager.Loade
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.dialog_test_result_title);
-            int percent = knownCharactersNumber *100 /(knownCharactersNumber + unknownCharactersNumber);
-            builder.setMessage("测试结束！您的认字率达到了" + Integer.toString(percent) +"%");
+//            int percent = knownCharactersNumber *100 /(knownCharactersNumber + unknownCharactersNumber);
+            builder.setMessage("测试结束！本次您新增了"+ learnedCharacterNum +"个认识的汉字");
             builder.setNegativeButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //Intent intent = new Intent(getActivity(), CustomLearningActivity.class);
                     //startActivity(intent);
-                    new SelectLearningDialogFragment().show(getFragmentManager(), "SelectLearningDialogFragment");
+                    Log.v("builder", "SimpleName = " + getActivity().getClass().getSimpleName() + ",MainActivity = " + MainActivity.class);
+
+                    if (getActivity().getClass().getSimpleName().equals("MainActivity")) {
+                        new SelectLearningDialogFragment().show(getFragmentManager(), "SelectLearningDialogFragment");
+                    } else if (getActivity().getClass().getSimpleName().equals("AbilityTestActivity")) {
+                        getActivity().finish();
+                    } else {
+                        getActivity().finish();
+                    }
                     //getActivity().finish();
                 }
             });
@@ -297,17 +349,8 @@ public class AbilityTestFragment extends Fragment implements LoaderManager.Loade
             builder.setSingleChoiceItems(learningList,-1,new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface arg0, int arg1) {
-
-                   // ContentValues value = new ContentValues();
                     learningTitle = (String)learningList[arg1];
-                    //ContentValues value = new ContentValues();
-                   /* value.put(LearnChineseContract.CustomLearning.COLUMN_STATUS, LearnChineseContract.YES);
-                    getActivity().getContentResolver().update(LearnChineseContract.CustomLearning.buildCustomLearningUriByName(title), value, null, null);
-                    Utility.setCustomLearningTag(getActivity(), title);
-                    /*get all characters and generate display sequence*/
-                   /* Bundle bundle = new Bundle();
-                    bundle.putString("title", title);
-                    getLoaderManager().initLoader(GET_LEARNING_CHARACTERS_LOADER, bundle, mThis);*/
+
                 }
             });
             builder.setNegativeButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {

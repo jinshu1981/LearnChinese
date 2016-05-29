@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by xuzhi on 2016/3/3.
@@ -198,5 +200,25 @@ public class Utility {
                 Integer.toString(calendar.get(Calendar.DATE));
         return date;
     }
+    static public String generateCharacterName(String sequence) {
+        final String format =  "[^\\u4e00-\\u9fa5]";//所有非汉字
+        Pattern pattern = Pattern.compile(format);
 
+        String characterName;
+        Matcher matcher = pattern.matcher(sequence);
+        characterName = matcher.replaceAll("");
+
+        Log.v(LOG_TAG,"characterName = " + characterName );
+        return characterName.trim();
+    }
+
+    static String getContentTag(String content){
+        String pureContent = Utility.generateCharacterName(content);
+        String contentTag = "";
+        for (int i = 0;i < pureContent.length();i++)
+        {
+            contentTag += "2";/*characters not in db*/
+        }
+        return contentTag;
+    }
 }

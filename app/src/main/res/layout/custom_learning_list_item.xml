@@ -31,13 +31,26 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="未学习"
+                android:text="0"
                 android:padding="20sp"
-                android:id = "@+id/learning_status"/>
+                android:id = "@+id/percentage"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:src = "@drawable/circle_waiting"
+                android:id = "@+id/learning_image"/>
+            <ProgressBar android:indeterminate="true"
+                android:layout_width="50sp" android:layout_height="50sp"
+                android:id="@+id/marker_progress" style="?android:attr/progressBarStyle"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:visibility="gone"/>
         </LinearLayout>
 </LinearLayout>

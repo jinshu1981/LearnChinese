@@ -26,7 +26,7 @@ public class LearnChineseContract {
     public static final String PATH_CUSTOM_LEARNING = CustomLearning.TABLE_NAME;
     public static final String YES = "yes";
     public static final String NO = "no";
-    public static final String DONE = "done";
+    //public static final String DONE = "done";
 
         public static final class Character implements BaseColumns {
 
@@ -121,7 +121,8 @@ public class LearnChineseContract {
         public static final String COLUMN_DATE = "date";
         public static final String COLUMN_STATUS = "learning";
         public static final String COLUMN_CHARACTER_SEQUENCE = "characterSequence";
-
+        public static final String COLUMN_PERCENTAGE = "percentage";/*a/A--- learned/all*/
+        public static final String COLUMN_CONTENT_TAG = "content_tag";/*11001000110---------1:learned,0:unlearned*/
         public static Uri buildCustomLearningUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
