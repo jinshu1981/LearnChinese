@@ -82,7 +82,7 @@ public class GenerateDefaultLearningListTask extends AsyncTask<String, Void, Voi
             value.put(LearnChineseContract.CustomLearning.COLUMN_NAME, list[i].name);
             value.put(LearnChineseContract.CustomLearning.COLUMN_DATE, Utility.getCurrentDate());
             value.put(LearnChineseContract.CustomLearning.COLUMN_CONTENT, list[i].content);
-            value.put(LearnChineseContract.CustomLearning.COLUMN_STATUS, LearnChineseContract.NO);
+            value.put(LearnChineseContract.CustomLearning.COLUMN_STATUS, (learnedCharactersNum == pureContent.length())?LearnChineseContract.FINISHED:LearnChineseContract.NO);
             value.put(LearnChineseContract.CustomLearning.COLUMN_CHARACTER_SEQUENCE, list[i].characterIdSequence);
             value.put(LearnChineseContract.CustomLearning.COLUMN_PERCENTAGE, Integer.toString(learnedCharactersNum)+ "/" + Integer.toString(pureContent.length()));
             value.put(LearnChineseContract.CustomLearning.COLUMN_CONTENT_TAG, contentFlag);
@@ -148,7 +148,7 @@ public class GenerateDefaultLearningListTask extends AsyncTask<String, Void, Voi
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.replace(R.id.output, fragment);
         transaction.commit();
-        Utility.setFirstUseTag(mActivity, "false");
+       // Utility.setFirstUseTag(mActivity, "false");
         Log.v(LOG_TAG, "load ability test fragment");
     }
 }

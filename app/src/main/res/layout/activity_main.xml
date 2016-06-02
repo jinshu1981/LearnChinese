@@ -3,12 +3,97 @@
     android:name="com.example.xuzhi.learnchinese.MainActivityFragment"
     tools:layout="@layout/fragment_main" android:layout_width="match_parent"
     android:layout_height="match_parent" />-->
-
-<FrameLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical">
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dip"
+    android:layout_weight="1"
     class="com.example.xuzhi.learnchinese.FragmentOne"
     android:id="@+id/output"
     xmlns:android="http://schemas.android.com/apk/res/android" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1sp"
+        android:background="@color/lightgray"/>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="5sp"
+        android:layout_marginTop="5sp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:id="@+id/study">
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/openbook_green_24"
+            android:id = "@+id/image_study"/>
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="学汉字"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="5sp"
+        android:layout_marginTop="5sp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:id="@+id/learned">
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/blackflag_24"
+            android:id = "@+id/image_learned"/>
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="已学会"            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="5sp"
+        android:layout_marginTop="5sp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:id="@+id/courses">
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/addlist_24"
+            android:id = "@+id/image_courses"/>
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="课程"            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="5sp"
+        android:layout_marginTop="5sp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:id="@+id/test">
+        <ImageView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/books_24"
+            android:id = "@+id/image_test"/>
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="字库"            />
+    </LinearLayout>
+
+</LinearLayout>
+</LinearLayout>
 
 

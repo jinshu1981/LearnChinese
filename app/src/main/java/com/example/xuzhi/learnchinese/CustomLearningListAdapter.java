@@ -74,21 +74,22 @@ public class CustomLearningListAdapter extends CursorAdapter {
         {
             case LearnChineseContract.NO:
                 //Log.v(LOG_TAG,"set learning_status NO");
-                learningImage.setImageResource(R.drawable.circle_waiting);
+                learningImage.setImageResource(R.drawable.play);
                 learningImage.setTag(LearnChineseContract.NO);
                 //learningStatus.setTextColor(mContext.getResources().getColor(R.color.black));
                 break;
             case LearnChineseContract.YES:
                 //Log.v(LOG_TAG,"set learning_status YES");
-                learningImage.setImageResource(R.drawable.circle_learning);
+                learningImage.setImageResource(R.drawable.stop);
                 learningImage.setTag(LearnChineseContract.YES);
                 //learningStatus.setText(IN_PROGRESS);
                 //learningStatus.setTextColor(mContext.getResources().getColor(R.color.green));
                 break;
-            /*case LearnChineseContract.DONE:
-                learningStatus.setText(DONE);
-                learningStatus.setTextColor(mContext.getResources().getColor(R.color.black));
-                break;*/
+            case LearnChineseContract.FINISHED:
+                learningImage.setImageResource(R.drawable.check_mark);
+                learningImage.setTag(LearnChineseContract.FINISHED);
+                learningImage.setClickable(false);
+                break;
             default:
                 break;
         }

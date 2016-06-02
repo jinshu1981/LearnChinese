@@ -26,6 +26,7 @@ public class LearnChineseContract {
     public static final String PATH_CUSTOM_LEARNING = CustomLearning.TABLE_NAME;
     public static final String YES = "yes";
     public static final String NO = "no";
+    public static final String FINISHED = "finished";
     //public static final String DONE = "done";
 
         public static final class Character implements BaseColumns {
@@ -63,6 +64,9 @@ public class LearnChineseContract {
         }
         public static Uri buildCharacterUriByRead(String read) {
             return CONTENT_URI.buildUpon().appendPath(COLUMN_READ).appendPath(read).build();
+        }
+        public static Uri buildCharacterUriByName(String name) {
+            return CONTENT_URI.buildUpon().appendPath(COLUMN_NAME).appendPath(name).build();
         }
         public static Uri buildCharacterUriByDisplaySequence(String sequence) {
             return CONTENT_URI.buildUpon().appendPath(COLUMN_DISPLAY_SEQUENCE).appendPath(sequence).build();

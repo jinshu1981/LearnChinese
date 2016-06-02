@@ -34,7 +34,7 @@ public class LearnedCharactersActivityFragment extends Fragment implements Loade
     public LearnedCharactersActivityFragment() {
         mThis = this;
     }
-
+    ImageView delete;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,6 +42,7 @@ public class LearnedCharactersActivityFragment extends Fragment implements Loade
         learnedCharactersGridView = (GridView)rootView.findViewById(R.id.learned_characters);
         mAdapter = new LearnedCharactersAdapter(getActivity(),null,0);
         learnedCharactersGridView.setAdapter(mAdapter);
+        delete = (ImageView)rootView.findViewById(R.id.delete);
         /*learnedCharactersGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -90,6 +91,7 @@ public class LearnedCharactersActivityFragment extends Fragment implements Loade
                             null,      // no need to use local data
                             0          // flags (not currently used, set to 0)
                     );
+                    delete.setVisibility(View.VISIBLE);
 
 
                 }
@@ -97,7 +99,7 @@ public class LearnedCharactersActivityFragment extends Fragment implements Loade
             }
         });
 
-        ImageView delete = (ImageView)rootView.findViewById(R.id.delete);
+
         delete.setBackgroundColor(getResources().getColor(R.color.highlightpink));
         delete.setOnDragListener(new View.OnDragListener() {
             @Override
@@ -125,6 +127,7 @@ public class LearnedCharactersActivityFragment extends Fragment implements Loade
                         Log.v(LOG_TAG, "Action is DragEvent.ACTION_DRAG_LOCATION");
                         break;
                     case DragEvent.ACTION_DRAG_ENDED:
+                        delete.setVisibility(View.GONE);
                         // if (!event.getResult())/*drop failed*/
                        /* {
                             ClipDescription temp = event.getClipDescription();

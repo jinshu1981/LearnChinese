@@ -51,7 +51,7 @@ public class GenerateDisplaySequenceTask extends AsyncTask<String, Void, Integer
 
     @Override
     protected void onPostExecute(Integer result) {
-        int resourceId = (result == CustomLearningActivityFragment.CLEAR_CHARACTER_SEQUENCE_LOADER)?R.drawable.circle_waiting:R.drawable.circle_learning;
+        int resourceId = (result == CustomLearningActivityFragment.CLEAR_CHARACTER_SEQUENCE_LOADER)?R.drawable.play:R.drawable.stop;
         mView.setImageResource(resourceId);
         mView.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);

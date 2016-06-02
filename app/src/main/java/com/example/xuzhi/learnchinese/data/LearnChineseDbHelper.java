@@ -110,4 +110,20 @@ public class LearnChineseDbHelper  extends SQLiteOpenHelper {
         db.update(CustomLearning.TABLE_NAME, row, "_id = ?", new String[] { String.valueOf(id) } );
         db.close();
     }
+    /**
+     * Updates a row in the database table with new column values, without changing the unique id of the row.
+     * For simplicity reasons, nothing happens if this operation fails.
+     * @param id The unique id of the row to update
+     * @param learningStatus The new learning status
+     */
+    public void updateLearningStatus(int id, String learningStatus) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        if (db == null) {
+            return;
+        }
+        ContentValues row = new ContentValues();
+        row.put(CustomLearning.COLUMN_STATUS, learningStatus);
+        db.update(CustomLearning.TABLE_NAME, row, "_id = ?", new String[] { String.valueOf(id) } );
+        db.close();
+    }
 }

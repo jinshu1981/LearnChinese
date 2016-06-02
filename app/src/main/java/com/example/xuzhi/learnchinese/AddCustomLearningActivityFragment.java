@@ -205,7 +205,7 @@ public class AddCustomLearningActivityFragment extends Fragment implements Loade
             value.put(LearnChineseContract.CustomLearning.COLUMN_NAME, currentInfo.name);
             value.put(LearnChineseContract.CustomLearning.COLUMN_DATE, currentInfo.date);
             value.put(LearnChineseContract.CustomLearning.COLUMN_CONTENT, currentInfo.content);
-            value.put(LearnChineseContract.CustomLearning.COLUMN_STATUS, LearnChineseContract.NO);
+            value.put(LearnChineseContract.CustomLearning.COLUMN_STATUS, (readCharacterNum == (charactersNameArray.length - 1))?LearnChineseContract.FINISHED:LearnChineseContract.NO);
             value.put(LearnChineseContract.CustomLearning.COLUMN_CHARACTER_SEQUENCE, characterIdSequence);
             value.put(LearnChineseContract.CustomLearning.COLUMN_PERCENTAGE,Integer.toString(readCharacterNum)+"/" + Integer.toString(charactersNameArray.length - 1));
             value.put(LearnChineseContract.CustomLearning.COLUMN_CONTENT_TAG,contentTag);

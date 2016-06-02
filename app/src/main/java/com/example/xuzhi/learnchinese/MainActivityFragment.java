@@ -1,7 +1,6 @@
 package com.example.xuzhi.learnchinese;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
@@ -35,11 +34,13 @@ import java.io.IOException;
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     View mRootView;
     TextView mCurrentCharacter;
-    ImageView mFlagRead,mFlagWritten,mFlagRemembered;
+    ImageView mFlagRead;
     private final String LOG_TAG = this.getClass().getSimpleName();
     private static final int DEFAULT_CHARACTER_LOADER = 0;
     private static final int CUSTOM_CHARACTER_LOADER = 1;
     private static String mFileName = null;
+    static int index = 0;/*待学习汉字序号*/
+    static String customLearningTag = "";
     private static final String CUSTOM_SEQUENCE = "custom_sequence";
     MainActivityFragment mThis;
     static Typeface tf1;
@@ -65,7 +66,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
        }
     }
     CharacterInfo[] mCharacters;
-    static int index = 0;
+
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
     public MainActivityFragment() {
@@ -84,8 +85,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         mCurrentCharacter = (TextView) mRootView.findViewById(R.id.ChineseCharacter);
         //mRead = (ImageView) mRootView.findViewById(R.id.read);
         mFlagRead = (ImageView) mRootView.findViewById(R.id.flag_read);
-        mFlagWritten = (ImageView) mRootView.findViewById(R.id.flag_write);
-        mFlagRemembered = (ImageView) mRootView.findViewById(R.id.flag_remember);
+        //mFlagRead.setImageResource(mCharacters[index].readFlag.equals(LearnChineseContract.NO)?R.drawable.whiteflag:R.drawable.greenflag);
+        //FlagWritten = (ImageView) mRootView.findViewById(R.id.flag_write);
+        //mFlagRemembered = (ImageView) mRootView.findViewById(R.id.flag_remember);
         tf1 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/simkai.ttf");
         mCurrentCharacter.setTypeface(tf1);
 
@@ -94,10 +96,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             public void onClick(View v) {
                 //Log.v(LOG_TAG,"mFlagRead.setOnClickListener");
                 if (mCharacters[index].readFlag.equals(LearnChineseContract.NO)) {
-                    mFlagRead.setImageResource(R.mipmap.flag1);
+                    mFlagRead.setImageResource(R.drawable.greenflag);
                     mCharacters[index].readFlag = LearnChineseContract.YES;
                 } else {
-                    mFlagRead.setImageResource(R.mipmap.flag);
+                    mFlagRead.setImageResource(R.drawable.whiteflag);
                     mCharacters[index].readFlag = LearnChineseContract.NO;
                 }
 
@@ -303,10 +305,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             sortOrder = LearnChineseContract.Character.COLUMN_ID + " ASC";
             uri = LearnChineseContract.Character.buildCharacterUriByRead(LearnChineseContract.NO);
         }
-        else if(CUSTOM_CHARACTER_LOADER == i)/*自定义字库*/
+        else if(CUSTOM_CHARACTER_LOADER == i)/*自定义字库，所有汉字均显示*/
         {
             sortOrder = LearnChineseContract.Character.COLUMN_DISPLAY_SEQUENCE + " ASC";
-            uri = LearnChineseContract.Character.buildCharacterUriByDisplaySequenceAndRead("0", LearnChineseContract.NO);
+            uri = LearnChineseContract.Character.buildCharacterUriByDisplaySequence("0");
         }
         else
         {
@@ -337,7 +339,13 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 mCharacters[i] = new CharacterInfo(cursor);
                 cursor.moveToNext();
             }
-            index = 0;
+            /*短暂退出软件后再次进入学习页面，保持汉字序号 待改进，写入数据库永久记录*/
+            String currentCustomLearningTag = Utility.getCustomLearningTag(getActivity());
+            if (!customLearningTag.equals(currentCustomLearningTag)) {
+                index = 0;
+                customLearningTag = currentCustomLearningTag;
+            }
+
             UpdateDisplay(index);
         }
 
@@ -351,7 +359,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     void UpdateDisplay(int index) {
         mCurrentCharacter.setText(mCharacters[index].character);
-        int imageResourceid = mCharacters[index].readFlag.equals(LearnChineseContract.NO) ? R.mipmap.flag : R.mipmap.flag1;
+        int imageResourceid = mCharacters[index].readFlag.equals(LearnChineseContract.NO) ? R.drawable.whiteflag : R.drawable.greenflag;
         mFlagRead.setImageResource(imageResourceid);
 
     }
@@ -367,8 +375,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         switch (item.getItemId()) {
             case R.id.action_parents_options_settings:
             {
-                Intent intent = new Intent(getActivity(), ParentsOptionsActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(getActivity(), ParentsOptionsActivity.class);
+                //startActivity(intent);
                 return true;
             }
             default:

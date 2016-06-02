@@ -1,8 +1,10 @@
 package com.example.xuzhi.learnchinese;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -49,12 +51,15 @@ public class CalculatePercentageTask extends AsyncTask<String, Void, Void>{
             String name = cursor.getString(nameIndex);
             int contentIndex = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_CONTENT);
             String content = cursor.getString(contentIndex);
+            int statusIndex = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_STATUS);
+            String status = cursor.getString(statusIndex);
             String pureContent = Utility.generateCharacterName(content);
 
             int percentageIndex = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_PERCENTAGE);
             String percentage = cursor.getString(percentageIndex);
             String[] percentArray = percentage.split("/");
             int learnedNum = Integer.parseInt(percentArray[0]);
+
             //int totalNum = Integer.parseInt(percentArray[1]);
 
             int contentTagIndex = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_CONTENT_TAG);
@@ -83,6 +88,28 @@ public class CalculatePercentageTask extends AsyncTask<String, Void, Void>{
                 contentTag = TextUtils.join("", contentTagArray);
                 percentage = Integer.toString(learnedNum) + "/" + percentArray[1];
                 myDbHelper.updateCustomLearningPercentage(id, percentage, contentTag);
+
+                if ((!status.equals(LearnChineseContract.FINISHED))&&(learnedNum == Integer.parseInt(percentArray[1])))
+                {
+                    myDbHelper.updateLearningStatus(id,LearnChineseContract.FINISHED);
+                    if (status.equals(LearnChineseContract.YES))
+                    {
+                        Utility.setCustomLearningTag((FragmentActivity)mContext,"");
+                        String[] Characters = pureContent.split("");
+                        ContentValues value = new ContentValues();
+                        for (int index = 0; index < Characters.length; index++) {
+                            if (Characters[index].equals("")) continue;
+                            value.put(LearnChineseContract.Character.COLUMN_DISPLAY_SEQUENCE, 0);
+                            mContext.getContentResolver().update(LearnChineseContract.Character.buildCharacterUriByName(Characters[index]),
+                                    value, null, null);
+                        }
+                    }
+                }
+
+                else if ((status.equals(LearnChineseContract.FINISHED)) && (learnedNum != Integer.parseInt(percentArray[1])))
+                {
+                    myDbHelper.updateLearningStatus(id,LearnChineseContract.NO);
+                }
 
                 //Log.v(LOG_TAG, "after name = " + name + ",character = " + charactersArray[j] + ",step = " + step + ",count = " + count + ",contentTag = " + contentTag);
             }

@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.xuzhi.learnchinese.data.LearnChineseContract;
@@ -39,8 +42,8 @@ public class AbilityTestFragment extends Fragment implements LoaderManager.Loade
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     static int startSequenceIndex = 1;
-    static int unknownCharactersNumber = 0;
-    static int knownCharactersNumber = 0;
+    //static int unknownCharactersNumber = 0;
+    //static int knownCharactersNumber = 0;
     static int testCharactersPerPage = 0;
     static String learningTitle = "";
     static final int UNKNOWN_CHARACTERS_LIMIT = 10;
@@ -85,7 +88,12 @@ public class AbilityTestFragment extends Fragment implements LoaderManager.Loade
         // Required empty public constructor
         mThis = this;
     }
-
+    @Override
+    public void onDestroy()
+    {
+        learnedCharacterNum = 0;
+        super.onDestroy();
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -320,12 +328,28 @@ public class AbilityTestFragment extends Fragment implements LoaderManager.Loade
                     //startActivity(intent);
                     Log.v("builder", "SimpleName = " + getActivity().getClass().getSimpleName() + ",MainActivity = " + MainActivity.class);
 
-                    if (getActivity().getClass().getSimpleName().equals("MainActivity")) {
+                    if (Utility.getFirstUseTag(getActivity()).equals("true")) {
                         new SelectLearningDialogFragment().show(getFragmentManager(), "SelectLearningDialogFragment");
-                    } else if (getActivity().getClass().getSimpleName().equals("AbilityTestActivity")) {
-                        getActivity().finish();
+                        Utility.setFirstUseTag(getActivity(), "false");
                     } else {
-                        getActivity().finish();
+                        /*返回学习界面*/
+                        Fragment fragment = new MainActivityFragment();
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.replace(R.id.output, fragment);
+                        transaction.commit();
+                        ImageView study = (ImageView) ((ViewGroup) getActivity()
+                                .findViewById(android.R.id.content)).findViewById(R.id.image_study);
+                        ImageView learned = (ImageView) ((ViewGroup) getActivity()
+                                .findViewById(android.R.id.content)).findViewById(R.id.image_learned);
+                        ImageView courses = (ImageView) ((ViewGroup) getActivity()
+                                .findViewById(android.R.id.content)).findViewById(R.id.image_courses);
+                        ImageView test = (ImageView) ((ViewGroup) getActivity()
+                                .findViewById(android.R.id.content)).findViewById(R.id.image_test);
+                        study.setBackgroundResource(R.drawable.openbook_green_24);
+                        learned.setBackgroundResource(R.drawable.blackflag_24);
+                        courses.setBackgroundResource(R.drawable.addlist_24);
+                        test.setBackgroundResource(R.drawable.books_24);
                     }
                     //getActivity().finish();
                 }

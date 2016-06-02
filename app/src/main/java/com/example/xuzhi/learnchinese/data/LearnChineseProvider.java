@@ -588,6 +588,9 @@ public class LearnChineseProvider extends ContentProvider {
             case LEARN_CHINESE_CHARACTER_WITH_ID:
                 rowsUpdated = UpdateCharacterById(uri, values);
                 break;
+            case LEARN_CHINESE_CHARACTER_WITH_NAME:
+                rowsUpdated = UpdateCharacterByName(uri, values);
+                break;
             case LEARN_CHINESE_CUSTOM_LEARNING_WITH_ID:
                 rowsUpdated = UpdateCustomLearningById(uri, values);
                 break;

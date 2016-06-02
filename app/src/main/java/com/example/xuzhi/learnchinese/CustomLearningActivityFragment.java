@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.xuzhi.learnchinese.data.LearnChineseContract;
@@ -72,6 +73,16 @@ public class CustomLearningActivityFragment extends Fragment implements LoaderMa
                 return true;
             }
 
+        });
+
+        //add new learning item
+        LinearLayout add = (LinearLayout)mRootView.findViewById(R.id.add);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AddCustomLearningActivity.class);
+                startActivity(intent);
+            }
         });
         return mRootView;
     }

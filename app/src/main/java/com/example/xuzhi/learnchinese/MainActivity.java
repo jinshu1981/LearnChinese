@@ -11,10 +11,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.example.xuzhi.learnchinese.data.LearnChineseContract;
 import com.example.xuzhi.learnchinese.data.ReadOnlyDbContract;
@@ -27,12 +32,98 @@ public class MainActivity extends AppCompatActivity  implements LoaderManager.Lo
     private final String LOG_TAG = this.getClass().getSimpleName();
     private static final int GET_CHARACTER_READ_ONLY_ID_LOADER = 0;
     private static final int GET_CHARACTER_ID_LOADER = 1;
+    private static  LinearLayout studyLayout,learnedLayout,coursesLayout,testLayout;
+    private static  ImageView study,learned,courses,test;
     List<Integer> CharacterReadOnlyIdList = new ArrayList<Integer>();
     List<Integer> CharacterIdList = new ArrayList<Integer>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*action bar 中显示logo*/
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        actionBar.setLogo(R.mipmap.ic_launcher);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+
+        studyLayout = (LinearLayout) ((ViewGroup) this
+                .findViewById(android.R.id.content)).findViewById(R.id.study);
+        learnedLayout = (LinearLayout) ((ViewGroup) this
+                .findViewById(android.R.id.content)).findViewById(R.id.learned);
+        coursesLayout = (LinearLayout) ((ViewGroup) this
+                .findViewById(android.R.id.content)).findViewById(R.id.courses);
+        testLayout = (LinearLayout) ((ViewGroup) this
+                .findViewById(android.R.id.content)).findViewById(R.id.test);
+
+        study = (ImageView)(studyLayout.findViewById(R.id.image_study));
+        learned = (ImageView)(learnedLayout.findViewById(R.id.image_learned));
+        courses = (ImageView)(coursesLayout.findViewById(R.id.image_courses));
+        test = (ImageView)(testLayout.findViewById(R.id.image_test));
+
+        /*学习界面加载结束后才允许点击切换页面*/
+        studyLayout.setClickable(false);
+        learnedLayout.setClickable(false);
+        coursesLayout.setClickable(false);
+        testLayout.setClickable(false);
+
+        studyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new MainActivityFragment();
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.output, fragment);
+                transaction.commit();
+                study.setImageResource(R.drawable.openbook_green_24);
+                learned.setImageResource(R.drawable.blackflag_24);
+                courses.setImageResource(R.drawable.addlist_24);
+                test.setImageResource(R.drawable.books_24);
+            }
+        });
+        learnedLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new LearnedCharactersActivityFragment();
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.output, fragment);
+                transaction.commit();
+                study.setImageResource(R.drawable.openbook_24);
+                learned.setImageResource(R.drawable.greenflag_24);
+                courses.setImageResource(R.drawable.addlist_24);
+                test.setImageResource(R.drawable.books_24);
+            }
+        });
+        coursesLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new CustomLearningActivityFragment();
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.output, fragment);
+                transaction.commit();
+                study.setImageResource(R.drawable.openbook_24);
+                learned.setImageResource(R.drawable.blackflag_24);
+                courses.setImageResource(R.drawable.addlist_green_24);
+                test.setImageResource(R.drawable.books_24);
+            }
+        });
+        testLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new AbilityTestFragment();
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.replace(R.id.output, fragment);
+                transaction.commit();
+                study.setImageResource(R.drawable.openbook_24);
+                learned.setImageResource(R.drawable.blackflag_24);
+                courses.setImageResource(R.drawable.addlist_24);
+                test.setImageResource(R.drawable.books_green_24);
+            }
+        });
         CharacterIdList.clear();
         CharacterReadOnlyIdList.clear();
        // SharedPreferences settings = getPreferences(0);
@@ -62,6 +153,10 @@ public class MainActivity extends AppCompatActivity  implements LoaderManager.Lo
             FragmentTransaction transaction = manager.beginTransaction();
             transaction.replace(R.id.output, fragment);
             transaction.commit();
+            studyLayout.setClickable(true);
+            learnedLayout.setClickable(true);
+            coursesLayout.setClickable(true);
+            testLayout.setClickable(true);
         }
     }
 
@@ -203,6 +298,11 @@ public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.output, fragment);
                 transaction.commit();
+
+                studyLayout.setClickable(true);
+                learnedLayout.setClickable(true);
+                coursesLayout.setClickable(true);
+                testLayout.setClickable(true);
             }
 
         }
