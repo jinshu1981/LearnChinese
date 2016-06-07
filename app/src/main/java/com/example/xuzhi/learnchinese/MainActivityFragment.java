@@ -4,10 +4,8 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
-import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -16,7 +14,6 @@ import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +25,7 @@ import com.example.xuzhi.learnchinese.data.LearnChineseContract;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     View mRootView;
     TextView mCurrentCharacter;
@@ -38,15 +33,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private final String LOG_TAG = this.getClass().getSimpleName();
     private static final int DEFAULT_CHARACTER_LOADER = 0;
     private static final int CUSTOM_CHARACTER_LOADER = 1;
-    private static String mFileName = null;
     static int index = 0;/*待学习汉字序号*/
     static String customLearningTag = "";
-    private static final String CUSTOM_SEQUENCE = "custom_sequence";
     MainActivityFragment mThis;
     static Typeface tf1;
 
-    String mReadStatus,mWriteStatus,mDoneStatus;
-    CountDownTimer mCountDownTimer;
     String CONSTANTS_RES_PREFIX = "android.resource://com.example.xuzhi.learnchinese/";
     final MediaPlayer mp  = new MediaPlayer();
 
@@ -55,8 +46,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         String character;
         String sounds;
         String readFlag;
-       // String writeFlag;
-        //String doneFlag;
         public  CharacterInfo(Cursor cursor){
             id = cursor.getInt(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_ID));
             character = cursor.getString(cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_NAME));
@@ -67,13 +56,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     }
     CharacterInfo[] mCharacters;
 
-    private MediaRecorder mRecorder = null;
-    private MediaPlayer mPlayer = null;
     public MainActivityFragment() {
-        mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFileName += "/audiorecordtest.3gp";
-
-        Log.v(LOG_TAG,mFileName);
         mThis = this;
     }
 
@@ -83,12 +66,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         mRootView = inflater.inflate(R.layout.fragment_main, container, false);
         mCurrentCharacter = (TextView) mRootView.findViewById(R.id.ChineseCharacter);
-        //mRead = (ImageView) mRootView.findViewById(R.id.read);
         mFlagRead = (ImageView) mRootView.findViewById(R.id.flag_read);
-        //mFlagRead.setImageResource(mCharacters[index].readFlag.equals(LearnChineseContract.NO)?R.drawable.whiteflag:R.drawable.greenflag);
-        //FlagWritten = (ImageView) mRootView.findViewById(R.id.flag_write);
-        //mFlagRemembered = (ImageView) mRootView.findViewById(R.id.flag_remember);
-        tf1 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/simkai.ttf");
+        tf1 = Typeface.createFromAsset(getActivity().getAssets(), "fonts/simkai.ttf");//设置卡片字体为楷体
         mCurrentCharacter.setTypeface(tf1);
 
         mFlagRead.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +87,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 getActivity().getContentResolver().update(
                         LearnChineseContract.Character.buildCharacterUriById(mCharacters[index].id),
                         value, null, null);
-                CalculatePercentageTask task = new CalculatePercentageTask(getActivity());
+                /*更新学习条目中的已学习汉字数*/
+                TaskCalculatePercentage task = new TaskCalculatePercentage(getActivity());
                 task.execute(mCharacters[index].character, mCharacters[index].readFlag);
 
             }
@@ -120,14 +100,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 mp.start();
             }
         });
-       /* cancel the recording function
-            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                performOnEnd();
-            }
-
-        });*/
 
         final GestureDetector gesture = new GestureDetector(getActivity(),
                 new GestureDetector.SimpleOnGestureListener() {
@@ -139,15 +111,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                     public boolean onSingleTapUp(MotionEvent ev) {
                         //Log.v(LOG_TAG, "mCurrentCharacter onclick");
                         try {
-                            if (mRecorder != null) stopRecording();
-                            if (mPlayer != null) stopPlaying();
                             mp.reset();
-                            //String string = mCursor.getString(mCursor.getColumnIndex(LearnChineseContract.Character.COLUMN_PRONUNCIATION));
-                            Log.v(LOG_TAG,"String = " + mCharacters[index].sounds);
+                            //Log.v(LOG_TAG,"String = " + mCharacters[index].sounds);
                             if (!customPronunciationExist()) {
                                 int id = getActivity().getResources().getIdentifier(mCharacters[index].sounds, "raw", "com.example.xuzhi.learnchinese");
                                 String uriString = CONSTANTS_RES_PREFIX + Integer.toString(id);
-                                //Log.v(LOG_TAG,"uriString = " + uriString);
                                 mp.setDataSource(getActivity(), Uri.parse(uriString));
                                 mp.prepareAsync();
                             }
@@ -176,14 +144,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
                             if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE
                                     && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                                Log.v(LOG_TAG, "Right to Left");
+
                                 index++;
-                                //mCursor.moveToPosition(index % mCursorLength);
-                                /*
-                                if (mPlayer != null)        stopPlaying();
-                                if (mRecorder != null)      stopRecording();
-                                mRead.setImageResource(R.mipmap.listen);
-                                mCountDownTimer.cancel();*/
                                 UpdateDisplay(index);
 
                             } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE
@@ -191,12 +153,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                                 Log.v(LOG_TAG, "Left to Right");
                                 if (index > 0) {
                                     index--;
-                                    //mCurrentCharacter.setText(Characters[index % Characters.length]);
-                                    //mCursor.moveToPosition(index%mCursorLength);
-                                    /*if (mPlayer != null)        stopPlaying();
-                                    if (mRecorder != null)      stopRecording();
-                                    mRead.setImageResource(R.mipmap.listen);
-                                    mCountDownTimer.cancel();*/
                                     UpdateDisplay(index);
 
                                 }
@@ -221,8 +177,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onDestroy() {
         mp.release();
-        if (mPlayer != null)        stopPlaying();
-        if (mRecorder != null)      stopRecording();
         super.onDestroy();
 
     }
@@ -231,70 +185,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         File sound = new File(Environment.getExternalStorageDirectory()+"/LearnChineseCP/" + mCharacters[index].sounds + ".3gp");
         return sound.exists();
     }
-    void performOnEnd()
-    {
-        startRecording();
-        mCountDownTimer = new CountDownTimer(3000, 1000) {
-            public void onTick(long millisUntilFinished) { }
-            public void onFinish() {
-                if (mRecorder != null) {
-                    stopRecording();
-                    //mRead.setImageResource(R.mipmap.listen);
-                    startPlaying();
-                }
-            }
-        }.start();
-    }
-    private void startRecording() {
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(mFileName);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-        try {
-            mRecorder.prepare();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "mRecorder prepare() failed");
-        }
-        //mRead.setImageResource(R.mipmap.read);
-        mRecorder.start();
-    }
-
-    private void stopRecording() {
-        mRecorder.stop();
-        mRecorder.reset();
-        mRecorder.release();
-        mRecorder = null;
-    }
-    private void stopPlaying() {
-        mPlayer.stop();
-        mPlayer.release();
-        mPlayer = null;
-    }
-    private void startPlaying() {
-        mPlayer = new MediaPlayer();
-        try {
-            mPlayer.setDataSource(mFileName);
-            mPlayer.prepare();
-            mPlayer.start();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "mPlayer prepare() failed");
-        }
-    }
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-       String customLearningTag = Utility.getCustomLearningTag(getActivity());
-        Log.v(LOG_TAG, "customLearningTag =" + customLearningTag);
-       /* if (customLearningTag.equals("")) {
-            getLoaderManager().initLoader(DEFAULT_CHARACTER_LOADER, null, this);
-        }
-        else
-        {
-            getLoaderManager().initLoader(CUSTOM_CHARACTER_LOADER, null, this);
-        }*/
-        super.onActivityCreated(savedInstanceState);
-    }
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
@@ -312,7 +203,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         }
         else
         {
-            Log.v(LOG_TAG, "unknown cursor loader,id  =" + i);
+            Log.e(LOG_TAG, "unknown cursor loader,id  =" + i);
         }
 
         return new CursorLoader(getActivity(),
@@ -327,12 +218,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 
         if ((cursor == null)||(cursor.getCount() == 0)) {
-            Log.v(LOG_TAG, " return cursorLoader.getId() = " + cursorLoader.getId());
+            //Log.v(LOG_TAG, " return cursorLoader.getId() = " + cursorLoader.getId());
             return;
         }
         int id = cursorLoader.getId();
         if ((DEFAULT_CHARACTER_LOADER == id)||(CUSTOM_CHARACTER_LOADER == id)) {
-            Log.v(LOG_TAG,"cursor.getCount() = " + cursor.getCount());
+            //Log.v(LOG_TAG,"cursor.getCount() = " + cursor.getCount());
             mCharacters = new CharacterInfo[cursor.getCount()];
             cursor.moveToFirst();
             for (int i = 0; i < mCharacters.length; i++) {
@@ -359,38 +250,19 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     void UpdateDisplay(int index) {
         mCurrentCharacter.setText(mCharacters[index].character);
-        int imageResourceid = mCharacters[index].readFlag.equals(LearnChineseContract.NO) ? R.drawable.whiteflag : R.drawable.greenflag;
-        mFlagRead.setImageResource(imageResourceid);
+        int imageResourceId = mCharacters[index].readFlag.equals(LearnChineseContract.NO) ? R.drawable.whiteflag : R.drawable.greenflag;
+        mFlagRead.setImageResource(imageResourceId);
 
     }
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Add this line in order for this fragment to handle menu events.
-        setHasOptionsMenu(true);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // 处理动作按钮的点击事件
-        switch (item.getItemId()) {
-            case R.id.action_parents_options_settings:
-            {
-                //Intent intent = new Intent(getActivity(), ParentsOptionsActivity.class);
-                //startActivity(intent);
-                return true;
-            }
-            default:
-                return super.onOptionsItemSelected(item);
-        }
 
-    }
+
     @Override
     public void onResume()
     {  // After a pause OR at startup
         super.onResume();
         //Refresh your stuff here
         String customLearningTag = Utility.getCustomLearningTag(getActivity());
-        Log.v(LOG_TAG, "onResume customLearningTag =" + customLearningTag);
+        //Log.v(LOG_TAG, "onResume customLearningTag =" + customLearningTag);
         if (customLearningTag.equals("")) {
             getLoaderManager().restartLoader(DEFAULT_CHARACTER_LOADER, null, this);
         }

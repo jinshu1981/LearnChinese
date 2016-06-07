@@ -24,6 +24,9 @@
 
     <string name="dialog_select_learning_title">选择学习内容</string>
 
+    <string name="dialog_I_known">我知道了</string>
+    <string name="dialog_not_show">不再提示</string>
+
     <!-- <string name="title_activity_character_detail">CharacterDetailActivity</string> -->
      <string name="title_activity_custom_define_pronounciation">新增自定义发音</string>
      <string-array name="tone_type">

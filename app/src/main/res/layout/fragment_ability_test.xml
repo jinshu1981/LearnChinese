@@ -3,17 +3,10 @@
     android:layout_height="match_parent"
     tools:context="com.example.xuzhi.learnchinese.AbilityTestFragment"
     android:orientation="vertical">
-
-    <!-- TODO: Update blank fragment layout -->
     <RelativeLayout  android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:background="@color/highlightgreen">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="下一页"
-            android:id = "@+id/next"
-            android:gravity="center"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:padding="5sp" />
+        android:background="@color/highlightgreen"
+        android:id = "@+id/learning_num">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,29 +25,19 @@
             android:layout_centerVertical="true"
             android:padding="5sp"/>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="结束"
+        <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:id = "@+id/finish"
             android:gravity="center"
+            android:src = "@drawable/stop"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:padding="5sp" />
+            android:layout_marginRight="5sp" />
     </RelativeLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src = "@drawable/down_arrow"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:id = "@+id/nextPage"/>
-    </LinearLayout>
+
     <GridView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0sp"
+        android:layout_weight="1"
         android:id = "@+id/ability_test_characters"
         android:columnWidth="90sp"
         android:numColumns="4"
@@ -62,8 +45,17 @@
         android:horizontalSpacing="5sp"
         android:stretchMode="columnWidth"
         android:gravity="center"
-        android:minWidth="45sp">
+        android:minWidth="45sp"
+        android:scrollIndicators="start">
     </GridView>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:src = "@drawable/down_arrow_1"
+        android:id = "@+id/nextPage"
+        android:visibility="gone"/>
 
 
 </LinearLayout>

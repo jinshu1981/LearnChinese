@@ -34,14 +34,14 @@ public class MainActivity extends AppCompatActivity  implements LoaderManager.Lo
     private static final int GET_CHARACTER_ID_LOADER = 1;
     private static  LinearLayout studyLayout,learnedLayout,coursesLayout,testLayout;
     private static  ImageView study,learned,courses,test;
-    List<Integer> CharacterReadOnlyIdList = new ArrayList<Integer>();
-    List<Integer> CharacterIdList = new ArrayList<Integer>();
+    List<Integer> CharacterReadOnlyIdList = new ArrayList<Integer>();/*待升级数据库id列表*/
+    List<Integer> CharacterIdList = new ArrayList<Integer>();/*本地汉字数据库id列表*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*action bar 中显示logo*/
+        /*action bar 中显示logo，隐藏action bar*/
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         actionBar.setLogo(R.mipmap.ic_launcher);
@@ -71,6 +71,10 @@ public class MainActivity extends AppCompatActivity  implements LoaderManager.Lo
         studyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.output);
+                if (f instanceof MainActivityFragment) {
+                    return;
+                }
                 Fragment fragment = new MainActivityFragment();
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
@@ -85,7 +89,11 @@ public class MainActivity extends AppCompatActivity  implements LoaderManager.Lo
         learnedLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new LearnedCharactersActivityFragment();
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.output);
+                if (f instanceof FragmentLearnedCharacters) {
+                    return;
+                }
+                Fragment fragment = new FragmentLearnedCharacters();
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.output, fragment);
@@ -99,7 +107,11 @@ public class MainActivity extends AppCompatActivity  implements LoaderManager.Lo
         coursesLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new CustomLearningActivityFragment();
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.output);
+                if (f instanceof FragmentCustomLearning) {
+                    return;
+                }
+                Fragment fragment = new FragmentCustomLearning();
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.output, fragment);
@@ -113,7 +125,11 @@ public class MainActivity extends AppCompatActivity  implements LoaderManager.Lo
         testLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new AbilityTestFragment();
+                Fragment f = getSupportFragmentManager().findFragmentById(R.id.output);
+                if (f instanceof FragmentAbilityTest) {
+                    return;
+                }
+                Fragment fragment = new FragmentAbilityTest();
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.output, fragment);
@@ -126,13 +142,11 @@ public class MainActivity extends AppCompatActivity  implements LoaderManager.Lo
         });
         CharacterIdList.clear();
         CharacterReadOnlyIdList.clear();
-       // SharedPreferences settings = getPreferences(0);
-       // boolean dbExist = settings.getBoolean("dbExist", false);
-        //Log.v(LOG_TAG, "dbExist =" + dbExist);
+
         if(Utility.judgeUpdateDb(getBaseContext())) {
             try {
                 /*load loading fragment*/
-                Fragment fragment = new FragmentOne();
+                Fragment fragment = new FragmentLoading();
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.output, fragment);
@@ -190,15 +204,15 @@ public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         if (GET_CHARACTER_READ_ONLY_ID_LOADER == i) {
             sortOrder = ReadOnlyDbContract.CharacterReadOnly.COLUMN_ID + " ASC";
             uri = ReadOnlyDbContract.CharacterReadOnly.CONTENT_URI;
-            Log.v(LOG_TAG, "GET_CHARACTER_READ_ONLY_ID_LOADER onCreateLoader" );
+           // Log.v(LOG_TAG, "GET_CHARACTER_READ_ONLY_ID_LOADER onCreateLoader" );
         }
         else if  (GET_CHARACTER_ID_LOADER == i) {
             sortOrder = LearnChineseContract.Character.COLUMN_ID + " ASC";
             uri = LearnChineseContract.Character.CONTENT_URI;
-            Log.v(LOG_TAG, "GET_CHARACTER_ID_LOADER onCreateLoader" );
+           // Log.v(LOG_TAG, "GET_CHARACTER_ID_LOADER onCreateLoader" );
         }
         else{
-            Log.v(LOG_TAG, "invalid loader id = " + i);
+            Log.e(LOG_TAG, "invalid loader id = " + i);
             return null;
         }
 
@@ -214,15 +228,15 @@ public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 
         if (cursor == null) {
-            Log.v(LOG_TAG, " return cursorLoader.getId() = " + cursorLoader.getId() + "cursor = " + cursor.toString() );
-                return;
+            //Log.v(LOG_TAG, " return cursorLoader.getId() = " + cursorLoader.getId() + "cursor = " + cursor.toString() );
+            return;
             }
         int count = cursor.getCount();
         Log.v(LOG_TAG, " cursor.getCount().getId() = " + cursorLoader.getId() + "count = " + count);
         int id = cursorLoader.getId();
         cursor.moveToFirst();
         if (id == GET_CHARACTER_READ_ONLY_ID_LOADER) {
-            Log.v(LOG_TAG, "GET_CHARACTER_READ_ONLY_ID_LOADER onLoadFinished start" );
+            //Log.v(LOG_TAG, "GET_CHARACTER_READ_ONLY_ID_LOADER onLoadFinished start" );
             /*获取只读数据库所有数据*/
             ContentValues[] cvArray = new ContentValues[count];
             for (int i = 0; i < count; i++) {
@@ -242,33 +256,33 @@ public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
             }
             /*内部数据库没有值，直接插入所有数据*/
             if (CharacterIdList.size() == 0) {
-                Log.v(LOG_TAG, "CharacterIdList is empty." );
+                //Log.v(LOG_TAG, "CharacterIdList is empty." );
                 int inserted = getContentResolver().bulkInsert(LearnChineseContract.Character.CONTENT_URI, cvArray);
             }
             else{
-                Log.v(LOG_TAG, "CharacterIdList is not empty.size =" + CharacterIdList.size());
+                //Log.v(LOG_TAG, "CharacterIdList is not empty.size =" + CharacterIdList.size());
                 /*比对并更新内部数据库，仅根据column_id进行比对*/
                 List<Integer> CharactersTobeAdd = new ArrayList<Integer>();
                 CharactersTobeAdd.addAll(CharacterReadOnlyIdList);
-                Log.v(LOG_TAG, "CharactersTobeAdd size:" + CharactersTobeAdd.size());
+               // Log.v(LOG_TAG, "CharactersTobeAdd size:" + CharactersTobeAdd.size());
                 Boolean modified = CharactersTobeAdd.removeAll(CharacterIdList);
 
 
                 Log.v(LOG_TAG,"CharactersTobeAdd is modified:" + modified.toString());
                 if (CharactersTobeAdd.size() > 0)
                 {
-                    Log.v(LOG_TAG, "CharactersTobeAdd size =" +  CharactersTobeAdd.size());
+                    //Log.v(LOG_TAG, "CharactersTobeAdd size =" +  CharactersTobeAdd.size());
                     BulkInsertNewCharacters(CharactersTobeAdd,cvArray);
                 }
 
                 List<Integer> CharactersTobeDel = new ArrayList<Integer>();
                 CharactersTobeDel.addAll(CharacterIdList);
-                Log.v(LOG_TAG, "CharactersTobeDel size:" + CharactersTobeDel.size());
+                //Log.v(LOG_TAG, "CharactersTobeDel size:" + CharactersTobeDel.size());
                 modified = CharactersTobeDel.removeAll(CharacterReadOnlyIdList);
-                Log.v(LOG_TAG,"CharactersTobeDel is modified:" + modified.toString());
+                //Log.v(LOG_TAG,"CharactersTobeDel is modified:" + modified.toString());
                 if (CharactersTobeDel.size()>0)
                 {
-                    Log.v(LOG_TAG, "CharactersTobeDel size =" +  CharactersTobeDel.size());
+                    //Log.v(LOG_TAG, "CharactersTobeDel size =" +  CharactersTobeDel.size());
                     DeleteCharacters(CharactersTobeDel);
                 }
 
@@ -279,17 +293,8 @@ public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
             if (firstUseTag.equals("true"))
             {
                 /*生成默认学习列表，结束后加载测试页面*/
-                GenerateDefaultLearningListTask task = new GenerateDefaultLearningListTask(this);
+                TaskGenerateDefaultLearningList task = new TaskGenerateDefaultLearningList(this);
                 task.execute();
-
-                /*load ability test fragment
-                Fragment fragment = new AbilityTestFragment();
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.replace(R.id.output, fragment);
-                transaction.commit();
-                Utility.setFirstUseTag(this, "false");
-                Log.v(LOG_TAG, "load ability test fragment");*/
             }
             else
             {
@@ -299,6 +304,7 @@ public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
                 transaction.replace(R.id.output, fragment);
                 transaction.commit();
 
+                /*进入正常页面后允许切换页面*/
                 studyLayout.setClickable(true);
                 learnedLayout.setClickable(true);
                 coursesLayout.setClickable(true);
@@ -315,10 +321,10 @@ public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
             }
             getLoaderManager().initLoader(GET_CHARACTER_READ_ONLY_ID_LOADER, null, this);
             getLoaderManager().destroyLoader(GET_CHARACTER_ID_LOADER);
-            Log.v(LOG_TAG, "GET_CHARACTER_ID_LOADER onLoadFinished,CharacterIdList.size()=" + CharacterIdList.size());
+            //Log.v(LOG_TAG, "GET_CHARACTER_ID_LOADER onLoadFinished,CharacterIdList.size()=" + CharacterIdList.size());
         }
         else{
-                Log.v(LOG_TAG, "invalid loader onLoadFinished id = " + id);
+                Log.e(LOG_TAG, "invalid loader onLoadFinished id = " + id);
             }
         }
 
@@ -329,7 +335,7 @@ public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
     public void createCharacterStatusTable(Context c){
             /*前提：数据库中被删除对象的ID不会被重复使用*/
             /*首先获取当前数据库所有字符ID，再获取新数据库所有字符ID进行比对*/
-        Log.v(LOG_TAG,"createCharacterStatusTable");
+        //Log.v(LOG_TAG,"createCharacterStatusTable");
         getLoaderManager().initLoader(GET_CHARACTER_ID_LOADER,null,this);
     };
 
