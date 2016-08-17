@@ -47,7 +47,8 @@
                 android:gravity="center"
                 android:layout_gravity="center_vertical|center_horizontal"
                 android:src = "@drawable/play"
-                android:id = "@+id/learning_image"/>
+                android:id = "@+id/learning_image"
+                android:visibility="gone"/>
             <ProgressBar android:indeterminate="true"
                 android:layout_width="50sp" android:layout_height="50sp"
                 android:id="@+id/marker_progress" style="?android:attr/progressBarStyle"

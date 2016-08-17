@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textColor="#b0b0ff"
+        android:textColor="#181867"
         android:textSize="20sp"
-        android:text="加载中..."/>
+        android:text="加 载 中..."/>
 </LinearLayout> 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.xuzhi.learnchinese" >
+    package="com.jinshu.xuzhi.learnchinese" >
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -13,35 +13,44 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <provider
             android:name=".data.LearnChineseProvider"
-            android:authorities="com.example.xuzhi.learnchinese" />
+            android:authorities="com.jinshu.xuzhi.learnchinese" />
 
         <activity
-            android:name=".CustomLearningDetailActivity"
+            android:name=".ActivityCustomLearningDetail"
             android:label="@string/title_activity_custom_learning_detail"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" >
         </activity>
         <activity
-            android:name=".AddCustomLearningActivity"
+            android:name=".ActivityAddCustomLearning"
             android:label="@string/title_activity_add_custom_learning"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".CustomDefinePronunciationActivity"
+            android:name=".ActivityCustomDefinePronunciation"
             android:label="@string/title_activity_custom_define_pronounciation" >
         </activity>
         <activity
-            android:name=".CustomPronunciationActivity"
+            android:name=".ActivityCustomPronunciation"
             android:label="@string/title_activity_custom_pronunciation" >
+        </activity>
+        <activity
+            android:name=".ActivityLearningCards"
+            android:label="@string/title_activity_activity_learning_cards" >
+        </activity>
+        <activity
+            android:name=".ActivityCourseDetail"
+            android:label="@string/title_activity_activity_course_detail" >
         </activity>
     </application>
 

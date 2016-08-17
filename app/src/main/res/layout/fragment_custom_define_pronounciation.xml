@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.xuzhi.learnchinese.FragmentCustomDefinePronunciation"
+    tools:context="com.jinshu.xuzhi.learnchinese.FragmentCustomDefinePronunciation"
     android:orientation="vertical">
 
     <TextView android:text="  键入想要自定义发音的拼音。\n\n  音调包含阴平（ˉ）、阳平（ˊ）、上声（ˇ）去声（ˋ）、轻声（不标调）五种，对应数字0,1,2,3,4。\n例如了=le0，星=xing1，辰 = chen2， 伞= san3,日= ri4。"

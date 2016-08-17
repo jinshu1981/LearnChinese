@@ -1,11 +1,18 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        learnChinese {
+            keyAlias 'learnChinese'
+            keyPassword 'jinshu1982'
+            storeFile file('E:/jinshu/andoridkeystore/learnChinese.jks')
+            storePassword 'jinshu1982'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
-        applicationId "com.example.xuzhi.learnchinese"
+        applicationId "com.jinshu.xuzhi.learnchinese"
         minSdkVersion 11
         targetSdkVersion 23
         versionCode 1
@@ -15,6 +22,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.learnChinese
         }
     }
 }
