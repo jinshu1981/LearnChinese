@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +18,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jinshu.xuzhi.learnchinese.AdapterLearnedCharacters;
-import com.jinshu.xuzhi.learnchinese.TaskCalculatePercentage;
 import com.jinshu.xuzhi.learnchinese.data.LearnChineseContract;
 
 /**
@@ -51,6 +48,7 @@ public class FragmentLearnedCharacters extends Fragment implements LoaderManager
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+
                 if (cursor != null) {
                     int idIndex = cursor.getColumnIndex(LearnChineseContract.Character.COLUMN_ID);
                     int cursorId = cursor.getInt(idIndex);
@@ -97,28 +95,25 @@ public class FragmentLearnedCharacters extends Fragment implements LoaderManager
                         position = Integer.parseInt(positionString);
                         learnedCharactersGridView.getChildAt(position).setVisibility(View.INVISIBLE);
                         Log.v(LOG_TAG, "childNumber = " + learnedCharactersGridView.getChildCount());*/
-                        Log.v(LOG_TAG, "Action is DragEvent.ACTION_DRAG_STARTED");
+                        //Log.e(LOG_TAG, "Action is DragEvent.ACTION_DRAG_STARTED");
                         break;
                     case DragEvent.ACTION_DRAG_ENTERED:
                         v.setBackgroundColor(getResources().getColor(R.color.red));
-                        Log.v(LOG_TAG, "Action is DragEvent.ACTION_DRAG_ENTERED");
                         break;
                     case DragEvent.ACTION_DRAG_EXITED:
                         v.setBackgroundColor(getResources().getColor(R.color.highlightpink));
-                        Log.v(LOG_TAG, "Action is DragEvent.ACTION_DRAG_EXITED");
+                        //Log.e(LOG_TAG, "Action is DragEvent.ACTION_DRAG_EXITED");
                         break;
                     case DragEvent.ACTION_DRAG_LOCATION:
-                        Log.v(LOG_TAG, "Action is DragEvent.ACTION_DRAG_LOCATION");
                         break;
                     case DragEvent.ACTION_DRAG_ENDED:
                         delete.setVisibility(View.GONE);
-                          Log.v(LOG_TAG, "Action is DragEvent.ACTION_DRAG_ENDED");
                         break;
                     case DragEvent.ACTION_DROP:
-                        Log.v(LOG_TAG, "ACTION_DROP event");
+                       // Log.e(LOG_TAG, "ACTION_DROP event");
                         String idString = event.getClipData().getItemAt(0).getText().toString();
                         int id = Integer.parseInt(idString);
-                        Log.v(LOG_TAG, "id = " + idString);
+                       //Log.e(LOG_TAG, "id = " + idString);
                         ContentValues value = new ContentValues();
                         String newStatus = LearnChineseContract.NO;
                         value.put(LearnChineseContract.Character.COLUMN_READ, newStatus);
@@ -126,11 +121,10 @@ public class FragmentLearnedCharacters extends Fragment implements LoaderManager
 
                         String name = event.getClipData().getItemAt(1).getText().toString();
                         TaskCalculatePercentage task = new TaskCalculatePercentage(getActivity());
-                        Log.v(LOG_TAG,"name = " + name);
-                        task.execute(name,LearnChineseContract.NO);
+
+                        task.execute(name, LearnChineseContract.NO);
                         v.setBackgroundColor(getResources().getColor(R.color.highlightpink));
                         getLoaderManager().restartLoader(LEARNED_CHARACTER_LOADER, null, mThis);
-
                         break;
                     default:
                         break;
@@ -151,7 +145,7 @@ public class FragmentLearnedCharacters extends Fragment implements LoaderManager
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle)
     {
-        Log.d(LOG_TAG, "onCreateLoader for loader_id " + i);
+       // Log.v(LOG_TAG, "onCreateLoader for loader_id " + i);
 
         CursorLoader cursor;
         String sortOrder = LearnChineseContract.CustomLearning.COLUMN_NAME + " ASC";
@@ -163,7 +157,7 @@ public class FragmentLearnedCharacters extends Fragment implements LoaderManager
                 null,
                 sortOrder);
 
-        Log.v(LOG_TAG,"onCreateLoader id = " + i );
+        //Log.e(LOG_TAG, "onCreateLoader id = " + i);
         return cursor;
 
     }
@@ -172,14 +166,14 @@ public class FragmentLearnedCharacters extends Fragment implements LoaderManager
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 
         TextView hint = (TextView)rootView.findViewById(R.id.hint);
-        if ((cursor==null)||(cursor.getCount() == 0))
+        if ((cursor==null)/*||(cursor.getCount() == 0)*/)
         {
-            Log.v(LOG_TAG, " return cursorLoader.getId()" + cursorLoader.getId());
+           // Log.v(LOG_TAG, " return cursorLoader.getId()" + cursorLoader.getId());
             hint.setText("0");
             return;
         }
         hint.setText(Integer.toString(cursor.getCount()));
-        Log.v(LOG_TAG, "onLoadFinished");
+        //Log.v(LOG_TAG, "onLoadFinished");
         mAdapter.swapCursor(cursor);
 
     }
