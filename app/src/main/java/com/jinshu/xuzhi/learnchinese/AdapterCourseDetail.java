@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.jinshu.xuzhi.learnchinese.Utility;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,16 +49,16 @@ public class AdapterCourseDetail extends BaseAdapter {
         switch (flag)
         {
             case "0":
-                color = mContext.getResources().getColor(R.color.black);
+                color = mContext.getResources().getColor(R.color.white);
                 break;
             case "1":
-                color = mContext.getResources().getColor(R.color.green);
+                color = mContext.getResources().getColor(R.color.lime);
                 break;
             case "2":
-                color = mContext.getResources().getColor(R.color.lightpink);
+                color = mContext.getResources().getColor(R.color.violet);
                 break;
             default:
-                color = mContext.getResources().getColor(R.color.lightpink);
+                color = mContext.getResources().getColor(R.color.violet);
                 break;
         }
         textView.setTextColor(color);

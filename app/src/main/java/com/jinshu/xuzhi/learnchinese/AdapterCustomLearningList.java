@@ -1,18 +1,13 @@
 package com.jinshu.xuzhi.learnchinese;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.jinshu.xuzhi.learnchinese.FragmentCustomLearning;
-import com.jinshu.xuzhi.learnchinese.Utility;
 import com.jinshu.xuzhi.learnchinese.data.LearnChineseContract;
 
 /**
@@ -41,7 +36,7 @@ public class AdapterCustomLearningList extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        TextView text = (TextView)view.findViewById(R.id.invisible_info);
+        TextView text = (TextView) view.findViewById(R.id.invisible_info);
         int idIndex = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_ID);
         int sequenceIndex = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_CHARACTER_SEQUENCE);
         int contentIndex = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_CONTENT);
@@ -49,22 +44,25 @@ public class AdapterCustomLearningList extends CursorAdapter {
                 "/" + cursor.getString(sequenceIndex) + "/" + cursor.getString(contentIndex);
         text.setText(textString);
 
-        text = (TextView)view.findViewById(R.id.name);
+        text = (TextView) view.findViewById(R.id.name);
         int textIndex = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_NAME);
         textString = cursor.getString(textIndex);
         text.setText(textString);
         Utility.setBoldTextStyle(text);
+        text.setTextColor(mContext.getResources().getColor(R.color.white));
 
-        TextView text1 = (TextView)view.findViewById(R.id.date);
+       /* TextView text1 = (TextView)view.findViewById(R.id.date);
         int textIndex1 = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_DATE);
         String textString1 = cursor.getString(textIndex1);
         text1.setText(textString1);
+        text1.setTextColor(mContext.getResources().getColor(R.color.white));*/
 
-        TextView percentage =  (TextView)view.findViewById(R.id.percentage);
+        TextView percentage = (TextView) view.findViewById(R.id.percentage);
         int percentageIndex = cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_PERCENTAGE);
         percentage.setText(cursor.getString(percentageIndex));
-
-        ImageView learningImage = (ImageView)view.findViewById(R.id.learning_image);
+        percentage.setTextColor(mContext.getResources().getColor(R.color.white));
+    }
+        /*ImageView learningImage = (ImageView)view.findViewById(R.id.learning_image);
         String learning_status = cursor.getString(cursor.getColumnIndex(LearnChineseContract.CustomLearning.COLUMN_STATUS));
         switch (learning_status)
         {
@@ -78,7 +76,7 @@ public class AdapterCustomLearningList extends CursorAdapter {
                 learningImage.setImageResource(R.drawable.stop);
                 learningImage.setTag(LearnChineseContract.YES);
                 break;*/
-            case LearnChineseContract.FINISHED:
+            /*case LearnChineseContract.FINISHED:
                 //learningImage.setImageResource(R.drawable.checkdrawable_mark);
                 learningImage.setTag(LearnChineseContract.FINISHED);
                 learningImage.setClickable(false);
@@ -107,7 +105,7 @@ public class AdapterCustomLearningList extends CursorAdapter {
         if (view.getTag().equals(LearnChineseContract.FINISHED))return;
         Intent intent = new Intent(mContext, com.jinshu.xuzhi.learnchinese.ActivityLearningCards.class).putExtra(LearnChineseContract.CustomLearning.COLUMN_CONTENT,Utility.generateCharacterName(content));
         mContext.startActivity(intent);
-    }
+    }*/
 
 
   /*  void updateCharacterSequence(ImageView view,ProgressBar progressBar,int loaderId,String characterSequence)

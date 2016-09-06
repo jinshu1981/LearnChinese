@@ -77,6 +77,7 @@ public class FragmentLearningCards extends Fragment  implements LoaderManager.Lo
                 if (mCharacters[index].readFlag.equals(LearnChineseContract.NO)) {
                     mFlagRead.setImageResource(R.drawable.greenflag);
                     mCharacters[index].readFlag = LearnChineseContract.YES;
+                    /*一份学习内容中相同的汉字全部更新学习状态*/
                     UpdateSameCharactersReadFlag(mCharacters,mCharacters[index].character,LearnChineseContract.YES);
                 } else {
                     mFlagRead.setImageResource(R.drawable.whiteflag);

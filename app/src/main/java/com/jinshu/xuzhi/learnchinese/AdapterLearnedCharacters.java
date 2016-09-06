@@ -50,7 +50,7 @@ public class AdapterLearnedCharacters extends CursorAdapter{
         }
         else
         {
-            text.setTextColor(mContext.getResources().getColor(R.color.black));
+            text.setTextColor(mContext.getResources().getColor(R.color.white));
         }
     }
 

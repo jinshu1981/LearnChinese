@@ -82,7 +82,7 @@ public class FragmentLearnedCharacters extends Fragment implements LoaderManager
         });
 
 
-        delete.setBackgroundColor(getResources().getColor(R.color.highlightpink));
+        delete.setBackgroundColor(getResources().getColor(R.color.deepskyblue));
         delete.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View v, DragEvent event) {
@@ -98,10 +98,10 @@ public class FragmentLearnedCharacters extends Fragment implements LoaderManager
                         //Log.e(LOG_TAG, "Action is DragEvent.ACTION_DRAG_STARTED");
                         break;
                     case DragEvent.ACTION_DRAG_ENTERED:
-                        v.setBackgroundColor(getResources().getColor(R.color.red));
+                        v.setBackgroundColor(getResources().getColor(R.color.violet));
                         break;
                     case DragEvent.ACTION_DRAG_EXITED:
-                        v.setBackgroundColor(getResources().getColor(R.color.highlightpink));
+                        v.setBackgroundColor(getResources().getColor(R.color.deepskyblue));
                         //Log.e(LOG_TAG, "Action is DragEvent.ACTION_DRAG_EXITED");
                         break;
                     case DragEvent.ACTION_DRAG_LOCATION:
@@ -123,7 +123,7 @@ public class FragmentLearnedCharacters extends Fragment implements LoaderManager
                         TaskCalculatePercentage task = new TaskCalculatePercentage(getActivity());
 
                         task.execute(name, LearnChineseContract.NO);
-                        v.setBackgroundColor(getResources().getColor(R.color.highlightpink));
+                        v.setBackgroundColor(getResources().getColor(R.color.deepskyblue));
                         getLoaderManager().restartLoader(LEARNED_CHARACTER_LOADER, null, mThis);
                         break;
                     default:

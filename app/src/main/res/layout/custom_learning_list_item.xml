@@ -1,58 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"   >
+    android:layout_height="match_parent"
+    android:background="@color/dimgray"
+    android:layout_gravity="center_vertical">
 
-        <LinearLayout
-        android:layout_width="0dip"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-            <TextView android:id="@+id/invisible_info"
-                android:padding="4sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:visibility="gone"/>
+        <TextView android:id="@+id/invisible_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
-            <TextView android:id="@+id/name"
-                android:text="name"
-                android:padding="4sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp" />
+        <TextView android:id="@+id/name"
+            android:text="name"
+            android:padding="10sp"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="0"
+            android:padding="10sp"
+            android:id = "@+id/percentage"/>
 
-            <TextView android:id="@+id/date"
+            <!--<TextView android:id="@+id/date"
                 android:text="date"
                 android:padding="4sp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content" />-->
 
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginRight="5sp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="0"
-                android:padding="20sp"
-                android:id = "@+id/percentage"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:src = "@drawable/play"
-                android:id = "@+id/learning_image"
-                android:visibility="gone"/>
-            <ProgressBar android:indeterminate="true"
-                android:layout_width="50sp" android:layout_height="50sp"
-                android:id="@+id/marker_progress" style="?android:attr/progressBarStyle"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:visibility="gone"/>
-        </LinearLayout>
+
 </LinearLayout>

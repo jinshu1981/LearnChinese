@@ -26,7 +26,6 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jinshu.xuzhi.learnchinese.AdapterLearnedCharacters;
 import com.jinshu.xuzhi.learnchinese.data.LearnChineseContract;
 
 import java.util.ArrayList;
@@ -125,13 +124,15 @@ public class FragmentAbilityTest extends Fragment implements LoaderManager.Loade
                     if (mLearnedCharactersList.contains(characterId)) {
                         mLearnedCharactersList.remove((Integer) characterId);
                         mLearnedCharactersNameList.remove(characterName);
-                        characterView.setTextColor(getResources().getColor(R.color.black));
+                        //characterView.setTextColor(getResources().getColor(R.color.white));
+                        characterView.setBackgroundResource(R.drawable.card_border_grid_view);
                         Log.v(LOG_TAG, "set black " + characterView.getText().toString());
                         learnedCharacterNum--;
                     } else {
                         mLearnedCharactersList.add(characterId);
                         mLearnedCharactersNameList.add(characterName);
-                        characterView.setTextColor(getResources().getColor(R.color.green));
+                        //characterView.setTextColor(getResources().getColor(R.color.green));
+                        characterView.setBackgroundResource(R.drawable.card_border_green_grid_view);
                         Log.v(LOG_TAG,"set green " + characterView.getText().toString());
                         learnedCharacterNum++;
                     }

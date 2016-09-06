@@ -172,6 +172,8 @@ public class MainActivity extends AppCompatActivity  implements LoaderManager.Lo
             learnedLayout.setClickable(true);
             coursesLayout.setClickable(true);
             testLayout.setClickable(true);
+
+            courses.setImageResource(R.drawable.addlist_green_24);
         }
     }
 

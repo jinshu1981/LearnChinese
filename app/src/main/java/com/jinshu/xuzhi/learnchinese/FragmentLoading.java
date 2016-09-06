@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 
 /**
@@ -26,6 +27,8 @@ public class FragmentLoading extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    View rootView;
+    ImageView loadingAnim;
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,9 +67,16 @@ public class FragmentLoading extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_fragment_one, container, false);
+         rootView = inflater.inflate(R.layout.fragment_fragment_one, container, false);
+        /* loadingAnim = (ImageView)rootView.findViewById(R.id.loading);
 
-        return view;
+
+        loadingAnim.setBackgroundResource(R.drawable.loading);
+
+        AnimationDrawable loadingAnimDrawable = (AnimationDrawable) loadingAnim.getBackground();
+        loadingAnimDrawable.start();*/
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

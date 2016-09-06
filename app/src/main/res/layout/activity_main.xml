@@ -23,7 +23,8 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@color/dimgray">
     <!--<LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,7 +57,8 @@
             android:id = "@+id/image_courses"/>
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="课程"            />
+            android:text="课程"
+            android:textColor="@color/white"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -73,7 +75,8 @@
             android:id = "@+id/image_learned"/>
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="已学会"            />
+            android:text="已学会"
+            android:textColor="@color/white"/>
     </LinearLayout>
 
 
@@ -92,7 +95,8 @@
             android:id = "@+id/image_test"/>
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="字库"            />
+            android:text="字库"
+            android:textColor="@color/white"/>
     </LinearLayout>
 
 </LinearLayout>
