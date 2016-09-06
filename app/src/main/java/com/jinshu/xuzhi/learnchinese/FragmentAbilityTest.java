@@ -126,7 +126,7 @@ public class FragmentAbilityTest extends Fragment implements LoaderManager.Loade
                         mLearnedCharactersNameList.remove(characterName);
                         //characterView.setTextColor(getResources().getColor(R.color.white));
                         characterView.setBackgroundResource(R.drawable.card_border_grid_view);
-                        Log.v(LOG_TAG, "set black " + characterView.getText().toString());
+                        Log.v(LOG_TAG, "set white " + characterView.getText().toString());
                         learnedCharacterNum--;
                     } else {
                         mLearnedCharactersList.add(characterId);
@@ -179,7 +179,7 @@ public class FragmentAbilityTest extends Fragment implements LoaderManager.Loade
 
                 /*calculate percentage and generate display color*/
                 String totalCharactersName = TextUtils.join("", mLearnedCharactersNameList.toArray());
-                Log.v(LOG_TAG, "totalCharactersName = " + totalCharactersName);
+                Log.e(LOG_TAG, "totalCharactersName = " + totalCharactersName);
                 com.jinshu.xuzhi.learnchinese.TaskCalculatePercentage task = new com.jinshu.xuzhi.learnchinese.TaskCalculatePercentage(getActivity());
                 task.execute(totalCharactersName, LearnChineseContract.YES);
 

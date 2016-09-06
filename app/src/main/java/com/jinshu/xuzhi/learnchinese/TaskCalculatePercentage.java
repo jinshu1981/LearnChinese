@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.jinshu.xuzhi.learnchinese.Utility;
 import com.jinshu.xuzhi.learnchinese.data.LearnChineseContract;
 import com.jinshu.xuzhi.learnchinese.data.LearnChineseDbHelper;
 
@@ -72,7 +71,7 @@ public class TaskCalculatePercentage extends AsyncTask<String, Void, Void>{
                 Pattern p = Pattern.compile(charactersArray[j]);
                 Matcher m = p.matcher(pureContent);
                 Log.v(LOG_TAG,"charactersArray[" + j + "] = " + charactersArray[j]);
-                count = 0;
+                //count = 0;
                 while (m.find()) {
                     learnedNum += step;
                     Log.v(LOG_TAG, "m.start() = " + m.start());
